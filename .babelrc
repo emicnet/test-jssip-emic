@@ -1,0 +1,50 @@
+{
+    "env": {
+        "development": {
+            "presets": [
+                [
+                    "env",
+                    {
+                        "targets": {
+                            "browsers": [
+                                "last 5 Chrome versions",
+                                "last 2 Firefox versions",
+                                "last 2 Safari versions"
+                            ]
+                        },
+                        "modules": "commonjs",
+                        "debug": true
+                    }
+                ]
+            ]
+        },
+        "production": {
+            "presets": [
+                [
+                    "env",
+                    {
+                        "targets": {
+                            "browsers": [
+                                "last 5 Chrome versions",
+                                "last 1 Firefox versions",
+                                "last 2 Safari versions",
+                                "ie 10-11",
+                                "last 3 edge versions"
+                            ]
+                        },
+                        "debug": true
+                    }
+                ]
+            ],
+            "plugins": [
+                [
+                    "transform-runtime",
+                    {
+                        "polyfill": false,
+                        "regenerator": true
+                    }
+                ]
+            ]
+        }
+    }
+}
