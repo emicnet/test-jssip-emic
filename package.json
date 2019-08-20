@@ -1,10 +1,9 @@
 {
-  "name": "cutkeywords",
+  "name": "test-jssip-emicnet",
   "version": "1.0.0",
   "description": "",
-  "main": "1.js",
+  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --open"
   },
   "author": "",
@@ -14,11 +13,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",
-    "babel-core": "^6.26.3",
     "babel-loader": "^8.0.6",
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
-    "babel-preset-es2015": "^6.24.1",
     "babel-register": "^6.26.0",
     "babelify": "^10.0.0",
     "webpack": "^4.27.1",
