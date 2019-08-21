@@ -6,11 +6,9 @@
                     "env",
                     {
                         "targets": {
-                            "browsers": [
-                                "last 5 Chrome versions",
-                                "last 2 Firefox versions",
-                                "last 2 Safari versions"
-                            ]
+                            "chrome": "66",
+                            "firefox": "60",
+                            "safari": "11"
                         },
                         "modules": "commonjs",
                         "debug": true
@@ -24,13 +22,9 @@
                     "env",
                     {
                         "targets": {
-                            "browsers": [
-                                "last 5 Chrome versions",
-                                "last 1 Firefox versions",
-                                "last 2 Safari versions",
-                                "ie 10-11",
-                                "last 3 edge versions"
-                            ]
+                            "chrome": "66",
+                            "firefox": "60",
+                            "safari": "11"
                         },
                         "debug": true
                     }
