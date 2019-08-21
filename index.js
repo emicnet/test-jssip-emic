@@ -1,10 +1,17 @@
 import phonebar from 'jssip-emicnet/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 phonebar.log('正在获取用户信息。。。')
+let un = 7034
+let pwd = '123456'
+let switchnumber = '02566699734'
+let gid = 0
+let calloutnumber = '10086'
+let callinnumber = '1024'
+
 phonebar.getUser(
-    7034,
-    '123456', //密码需要加引号
-    '02566699734',
+    un,
+    pwd, //密码需要加引号
+    switchnumber,
     (err, res) => {
         if (!err) {
             phonebar.log('获取用户信息,包含用户信息和组信息')
@@ -15,10 +22,10 @@ phonebar.getUser(
                 let gid = group.id
             }
             let params = {
-                un: '7034',
-                switchnumber: '02566699734',
-                pwd: '123456',
-                gid: '0'
+                un: un,
+                switchnumber: switchnumber,
+                pwd: pwd,
+                gid: gid
             }
             let eventCallback = {
                 register: function(res) {
@@ -31,10 +38,86 @@ phonebar.getUser(
                                 phonebar.checkSeatState()
                             )
                         }, 1000)
+                        
+                        setTimeout(() => {
+                            // 登陆成功之后，可以呼出
+                            // 呼外线
+                            phonebar.call({
+                                peerID: '9' + calloutnumber,
+                                callType: 2
+                            })
+                            // 呼内线
+                            // phonebar.call({
+                            //     peerID: callinnumber,
+                            //     callType: 3
+                            // })
+                        }, 2000)
+                        
                     }
                 },
                 callEvent: function(type, data) {
-                    console.log(type, data)
+                    phonebar.log('callback:callEvent', type, data)
+                    switch (type) {
+                        case 'newPBXCall':
+                            var ccNumber = data.c
+                            var isAnswer = confirm('来电接听')
+                            phonebar.log('是否接听', isAnswer)
+                            if (!isAnswer) {
+                                phonebar.terminate(ccNumber)
+                            } else {
+                                phonebar.answerPBXCall(ccNumber)
+                            }
+                            break
+                        case 'cancelPBXCall':
+                            break
+                        case 'callinResponse':
+                            if (data.r != 200) {
+                                phonebar.log(`外呼内线响应状态${data.r}`)
+                            }
+                            break
+                        case 'calloutResponse':
+                            //获取ccnumber 通话唯一标识
+                            var ccNumber = data.r == 200 ? data.c : undefined
+                            if (data.r != 200) {
+                                phonebar.log(`响应状态${data.r}`)
+                            }
+                            phonebar.log('calloutResponse',ccNumber)
+                            break
+                        case 'callinFaildResponse':
+                            break
+                        case 'answeredPBXCall': 
+                            var ccNumber = data.c ? data.c : undefined
+                            // setTimeout(() => {
+                            //     var isExist = confirm('坐席 1024 是否登陆')
+                            //     if(!isExist) return 
+                            //     var isTransfer = confirm('是否转接')
+                            //     if(!isTransfer) {
+                            //         phonebar.terminate(ccNumber)
+                            //     }else {
+                            //         phonebar.transferPBXCall('2045','1024',ccNumber,function(type,data) {
+                            //             if(res.type=='transferCallSuccess'){
+                            //                 phonebar.log('transferCallSuccess')
+                            //             }
+                            //             if(res.type=='transferCallFaild'){
+                            //                 phonebar.log('transferCallFaild')
+                            //             }
+                            //         })
+                            //     }
+                            // },20000)
+
+                            // setTimeout(() => {
+                            //     // 呼叫保持后，对方会有语音提示
+                            //     phonebar.hold(ccNumber)
+                            // },2000) 
+
+                            // setTimeout(() => {
+                            //     phonebar.unhold(ccNumber)
+                            // },10000) 
+                            break
+                        case 'endPBXCall':
+                            phonebar.log('通话结束')
+                            break
+                    }
                 },
                 kickedOffLine: function(type, data) {
                     console.log(type, data)
