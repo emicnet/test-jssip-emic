@@ -61,6 +61,8 @@ phonebar.getUser(
                         case 'newPBXCall':
                             var ccNumber = data.c
                             var isAnswer = confirm('来电接听')
+                            // 获取坐席状态
+                            seatStatelog()
                             phonebar.log('是否接听', isAnswer)
                             if (!isAnswer) {
                                 phonebar.terminate(ccNumber)
@@ -74,6 +76,8 @@ phonebar.getUser(
                             if (data.r != 200) {
                                 phonebar.log(`外呼内线响应状态${data.r}`)
                             }
+                            // 获取坐席状态
+                            seatStatelog()
                             break
                         case 'calloutResponse':
                             //获取ccnumber 通话唯一标识
@@ -86,6 +90,8 @@ phonebar.getUser(
                         case 'callinFaildResponse':
                             break
                         case 'answeredPBXCall': 
+                            // 获取坐席状态
+                            seatStatelog()
                             var ccNumber = data.c ? data.c : undefined
                             // setTimeout(() => {
                             //     var isExist = confirm('坐席 1024 是否登陆')
@@ -105,16 +111,22 @@ phonebar.getUser(
                             //     }
                             // },20000)
 
-                            // setTimeout(() => {
-                            //     // 呼叫保持后，对方会有语音提示
-                            //     phonebar.hold(ccNumber)
-                            // },2000) 
+                            setTimeout(() => {
+                                // 呼叫保持后，对方会有语音提示
+                                phonebar.hold(ccNumber)
+                                // 获取坐席状态
+                                seatStatelog()
+                            },2000) 
 
-                            // setTimeout(() => {
-                            //     phonebar.unhold(ccNumber)
-                            // },10000) 
+                            setTimeout(() => {
+                                phonebar.unhold(ccNumber)
+                                // 获取坐席状态
+                                seatStatelog()
+                            },10000) 
                             break
                         case 'endPBXCall':
+                            // 获取坐席状态
+                            seatStatelog()
                             phonebar.log('通话结束')
                             break
                     }
@@ -140,3 +152,15 @@ phonebar.getUser(
         }
     }
 )
+
+function seatStatelog(state) {
+    var state = phonebar.checkSeatState()
+    switch(state) {
+        case 0: phonebar.log('当前坐席 离线');break;
+        case 1: phonebar.log('当前坐席 空闲');break;
+        case 2: phonebar.log('当前坐席 忙碌');break;
+        case 3: phonebar.log('当前坐席 振铃');break;
+        case 4: phonebar.log('当前坐席 通话');break;
+        case 5: phonebar.log('当前坐席 保持');break;
+    }
+}
