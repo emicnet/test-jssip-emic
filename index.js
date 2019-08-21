@@ -1,12 +1,22 @@
 import phonebar from 'jssip-emicnet/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 phonebar.log('正在获取用户信息。。。')
-let un = 7034
-let pwd = '123456'
-let switchnumber = '02566699734'
-let gid = 0
-let calloutnumber = '10086'
+let un = 1002
+let pwd = 'SMHgRu*3'
+let switchnumber = '02180181735'
+let gid = 21239
+let calloutnumber = '10010'
 let callinnumber = '1024'
+let callfailedReason = {
+    '470': '当前分机未绑定SIP话机',
+    '471': 'SIP话机不在线',
+    '486': 'SIP话机正忙',
+    '503': '对方忙碌',
+    '507': '总机号已停机',
+    '508': '非工作时间',
+    '512': '该客户今日被呼叫次数已达上限',
+    '1000': '禁止拨打无权限坐席'
+}
 
 phonebar.getUser(
     un,
@@ -31,14 +41,14 @@ phonebar.getUser(
                 register: function(res) {
                     if (res.code == 200) {
                         phonebar.log('登录成功')
-                        phonebar.log(phonebar.checkSeatState())
+                        phonebar.log(phonebar.checkLogin())
                         setTimeout(() => {
                             phonebar.log(
                                 '再次检查登录状态',
-                                phonebar.checkSeatState()
+                                phonebar.checkLogin()
                             )
                         }, 1000)
-                        
+
                         setTimeout(() => {
                             // 登陆成功之后，可以呼出
                             // 呼外线
@@ -52,7 +62,6 @@ phonebar.getUser(
                             //     callType: 3
                             // })
                         }, 2000)
-                        
                     }
                 },
                 callEvent: function(type, data) {
@@ -71,25 +80,25 @@ phonebar.getUser(
                         case 'cancelPBXCall':
                             break
                         case 'callinResponse':
-                            if (data.r != 200) {
-                                phonebar.log(`外呼内线响应状态${data.r}`)
-                            }
-                            break
                         case 'calloutResponse':
                             //获取ccnumber 通话唯一标识
                             var ccNumber = data.r == 200 ? data.c : undefined
                             if (data.r != 200) {
                                 phonebar.log(`响应状态${data.r}`)
+                                let msg = callfailedReason[data.r]
+                                msg = msg || '呼叫失败'
+                                phonebar.log(msg)
+                            } else {
+                                phonebar.log('呼叫成功', ccNumber)
                             }
-                            phonebar.log('calloutResponse',ccNumber)
                             break
                         case 'callinFaildResponse':
                             break
-                        case 'answeredPBXCall': 
+                        case 'answeredPBXCall':
                             var ccNumber = data.c ? data.c : undefined
                             // setTimeout(() => {
                             //     var isExist = confirm('坐席 1024 是否登陆')
-                            //     if(!isExist) return 
+                            //     if(!isExist) return
                             //     var isTransfer = confirm('是否转接')
                             //     if(!isTransfer) {
                             //         phonebar.terminate(ccNumber)
@@ -108,11 +117,11 @@ phonebar.getUser(
                             // setTimeout(() => {
                             //     // 呼叫保持后，对方会有语音提示
                             //     phonebar.hold(ccNumber)
-                            // },2000) 
+                            // },2000)
 
                             // setTimeout(() => {
                             //     phonebar.unhold(ccNumber)
-                            // },10000) 
+                            // },10000)
                             break
                         case 'endPBXCall':
                             phonebar.log('通话结束')
@@ -136,7 +145,7 @@ phonebar.getUser(
             }
             phonebar.init(params, eventCallback)
         } else {
-            phonebar.log('获取用户信息失败')
+            phonebar.log('获取用户信息失败', err)
         }
     }
 )
