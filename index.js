@@ -76,8 +76,7 @@ phonebar.getUser(
                         res
                     )
                     for (const member of res.returnData.data) {
-                        // 状态 0-离线 1-空闲 2-暂离 3-消息请求 4-呼叫请求 5-通话中 6-话后处理
-                        //会话状态   0 离线  1 空闲  2 忙碌  3 振铃 4 通话 5 保持
+                        //会话状态   0 离线  1 空闲  2 忙碌
                         phonebar.log(
                             `${member.displayname} 状态 ${
                                 member.service_control
