@@ -1,16 +1,15 @@
-import phonebar from 'jssip-emicnet/dist/phonebar'
+//import phonebar from 'jssip-emicnet/dist/phonebar'
+import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
+
 phonebar.log('正在获取用户信息。。。')
-let un = 1002
-let pwd = 'SMHgRu*3'
-let switchnumber = '02180181735'
-let gid = 21239
-let calloutnumber = '10010'
+let un = 1006
+let pwd = '1006'
+let switchnumber = '02566699734'
+let gid = 2040
+let calloutnumber = '18612441783'
 let callinnumber = '1024'
 let callfailedReason = {
-    '470': '当前分机未绑定SIP话机',
-    '471': 'SIP话机不在线',
-    '486': 'SIP话机正忙',
     '503': '对方忙碌',
     '507': '总机号已停机',
     '508': '非工作时间',
@@ -18,11 +17,27 @@ let callfailedReason = {
     '1000': '禁止拨打无权限坐席'
 }
 
+var webParam0 = {
+    un: 1006,
+    pwd: '1006',
+    eid: '10000'
+}
+//没有先调用phonebar.getUser获取坐席相关信息，这个调用会失败
+async function test_getGroups() {
+    localStorage.removeItem('userData')
+    //var res = await phonebar.webApiHandler('getGroups', webParam0)
+    var res = await phonebar.webApiHandler('searchEpMembers', webParam0)
+    if (res.status != 200) phonebar.log(res.info)
+    else phonebar.log('成功调用phonebar.webApiHandler')
+}
+
+test_getGroups()
+
 phonebar.getUser(
     un,
     pwd, //密码需要加引号
     switchnumber,
-    (err, res) => {
+    async (err, res) => {
         if (!err) {
             phonebar.log('获取用户信息,包含用户信息和组信息')
             let memberInfo = res
@@ -31,11 +46,47 @@ phonebar.getUser(
                 phonebar.log('组信息', group)
                 let gid = group.id
             }
-            let params = {
-                un: un,
-                switchnumber: switchnumber,
-                pwd: pwd,
-                gid: gid
+            var userData = JSON.parse(localStorage.userData)
+            var webParam = {
+                un: 1006,
+                pwd: '1006',
+                eid: userData.eid
+                //eid: '6565' //不存在eid res.status 50008
+            }
+            var res = await phonebar.webApiHandler('getGroups', webParam)
+            if (res.status == 200) {
+                phonebar.log('获取了所有技能组:')
+                for (const group of res.returnData) {
+                    //{group.id, group.eid, group.name}
+                    phonebar.log(`${group.name} : ${group.id}`)
+                }
+                const gn = res.returnData[0].name
+                const gi = res.returnData[0].id
+                webParam.searchGid = gi //'1000000015'
+                webParam.length = 10
+                var res = await phonebar.webApiHandler(
+                    'searchEpMembers',
+                    webParam
+                )
+                if (res.status == 200) {
+                    phonebar.log(
+                        `查询${gn} 组成员成功返回 ${
+                            res.returnData.recordsTotal
+                        } 人`,
+                        res
+                    )
+                    for (const member of res.returnData.data) {
+                        // 状态 0-离线 1-空闲 2-暂离 3-消息请求 4-呼叫请求 5-通话中 6-话后处理
+                        //会话状态   0 离线  1 空闲  2 忙碌  3 振铃 4 通话 5 保持
+                        phonebar.log(
+                            `${member.displayname} 状态 ${
+                                member.service_control
+                            }`
+                        )
+                    }
+                }
+            } else {
+                phonebar.log('获取技能组失败', res)
             }
             let eventCallback = {
                 register: function(res) {
@@ -52,10 +103,10 @@ phonebar.getUser(
                         setTimeout(() => {
                             // 登陆成功之后，可以呼出
                             // 呼外线
-                            phonebar.call({
-                                peerID: '9' + calloutnumber,
-                                callType: 2
-                            })
+                            // phonebar.call({
+                            //     peerID: '9' + calloutnumber,
+                            //     callType: 2
+                            // })
                             // 呼内线
                             // phonebar.call({
                             //     peerID: callinnumber,
@@ -145,7 +196,7 @@ phonebar.getUser(
                     }
                 },
                 kickedOffLine: function(type, data) {
-                    console.log(type, data)
+                    phonebar.log(type, data)
                 },
                 statusChanged: data => {
                     if (data.status == '0') {
@@ -159,7 +210,13 @@ phonebar.getUser(
                     }
                 }
             }
-            phonebar.init(params, eventCallback)
+            let params = {
+                un: un,
+                switchnumber: switchnumber,
+                pwd: pwd,
+                gid: gid
+            }
+            //phonebar.init(params, eventCallback)
         } else {
             phonebar.log('获取用户信息失败', err)
         }
