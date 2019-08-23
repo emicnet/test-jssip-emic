@@ -78,9 +78,7 @@ phonebar.getUser(
                     for (const member of res.returnData.data) {
                         //会话状态   0 离线  1 空闲  2 忙碌
                         phonebar.log(
-                            `${member.displayname} 状态 ${
-                                member.service_control
-                            }`
+                            `${member.displayname} 状态 ${member.kefuStatus}`
                         )
                     }
                 }
