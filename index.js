@@ -1,5 +1,5 @@
-//import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+//import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
 phonebar.log('正在获取用户信息。。。')
@@ -53,38 +53,38 @@ phonebar.getUser(
                 eid: userData.eid
                 //eid: '6565' //不存在eid res.status 50008
             }
-            // var res = await phonebar.webApiHandler('getGroups', webParam)
-            // if (res.status == 200) {
-            //     phonebar.log('获取了所有技能组:')
-            //     for (const group of res.returnData) {
-            //         //{group.id, group.eid, group.name}
-            //         phonebar.log(`${group.name} : ${group.id}`)
-            //     }
-            //     const gn = res.returnData[0].name
-            //     const gi = res.returnData[0].id
-            //     webParam.searchGid = gi //'1000000015'
-            //     webParam.length = 10
-            //     var res = await phonebar.webApiHandler(
-            //         'searchEpMembers',
-            //         webParam
-            //     )
-            //     if (res.status == 200) {
-            //         phonebar.log(
-            //             `查询${gn} 组成员成功返回 ${
-            //                 res.returnData.recordsTotal
-            //             } 人`,
-            //             res
-            //         )
-            //         for (const member of res.returnData.data) {
-            //             //会话状态   0 离线  1 空闲  2 忙碌
-            //             phonebar.log(
-            //                 `${member.displayname} 状态 ${member.kefuStatus}`
-            //             )
-            //         }
-            //     }
-            // } else {
-            //     phonebar.log('获取技能组失败', res)
-            // }
+            var res = await phonebar.webApiHandler('getGroups', webParam)
+            if (res.status == 200) {
+                phonebar.log('获取了所有技能组:')
+                for (const group of res.returnData) {
+                    //{group.id, group.eid, group.name}
+                    phonebar.log(`${group.name} : ${group.id}`)
+                }
+                const gn = res.returnData[0].name
+                const gi = res.returnData[0].id
+                webParam.searchGid = gi //'1000000015'
+                webParam.length = 10
+                var res = await phonebar.webApiHandler(
+                    'searchEpMembers',
+                    webParam
+                )
+                if (res.status == 200) {
+                    phonebar.log(
+                        `查询${gn} 组成员成功返回 ${
+                            res.returnData.recordsTotal
+                        } 人`,
+                        res
+                    )
+                    for (const member of res.returnData.data) {
+                        //会话状态   0 离线  1 空闲  2 忙碌
+                        phonebar.log(
+                            `${member.displayname} 状态 ${member.kefuStatus}`
+                        )
+                    }
+                }
+            } else {
+                phonebar.log('获取技能组失败', res)
+            }
             let eventCallback = {
                 register: function(res) {
                     if (res.code == 200) {
@@ -143,7 +143,7 @@ phonebar.getUser(
                                 msg = msg || '呼叫失败'
                                 phonebar.log(msg)
                             } else {
-                                phonebar.log('呼叫成功', data)
+                                phonebar.log('服务器处理呼叫请求', data)
                             }
                             break
                         case 'callinFaildResponse':
