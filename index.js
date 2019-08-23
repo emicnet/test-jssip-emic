@@ -7,7 +7,7 @@ let un = 1006
 let pwd = '1006'
 let switchnumber = '02566699734'
 let gid = 2040
-let calloutnumber = '18612441783'
+let calloutnumber = '10010'
 let callinnumber = '1024'
 let callfailedReason = {
     '503': '对方忙碌',
