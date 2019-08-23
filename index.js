@@ -53,38 +53,38 @@ phonebar.getUser(
                 eid: userData.eid
                 //eid: '6565' //不存在eid res.status 50008
             }
-            var res = await phonebar.webApiHandler('getGroups', webParam)
-            if (res.status == 200) {
-                phonebar.log('获取了所有技能组:')
-                for (const group of res.returnData) {
-                    //{group.id, group.eid, group.name}
-                    phonebar.log(`${group.name} : ${group.id}`)
-                }
-                const gn = res.returnData[0].name
-                const gi = res.returnData[0].id
-                webParam.searchGid = gi //'1000000015'
-                webParam.length = 10
-                var res = await phonebar.webApiHandler(
-                    'searchEpMembers',
-                    webParam
-                )
-                if (res.status == 200) {
-                    phonebar.log(
-                        `查询${gn} 组成员成功返回 ${
-                            res.returnData.recordsTotal
-                        } 人`,
-                        res
-                    )
-                    for (const member of res.returnData.data) {
-                        //会话状态   0 离线  1 空闲  2 忙碌
-                        phonebar.log(
-                            `${member.displayname} 状态 ${member.kefuStatus}`
-                        )
-                    }
-                }
-            } else {
-                phonebar.log('获取技能组失败', res)
-            }
+            // var res = await phonebar.webApiHandler('getGroups', webParam)
+            // if (res.status == 200) {
+            //     phonebar.log('获取了所有技能组:')
+            //     for (const group of res.returnData) {
+            //         //{group.id, group.eid, group.name}
+            //         phonebar.log(`${group.name} : ${group.id}`)
+            //     }
+            //     const gn = res.returnData[0].name
+            //     const gi = res.returnData[0].id
+            //     webParam.searchGid = gi //'1000000015'
+            //     webParam.length = 10
+            //     var res = await phonebar.webApiHandler(
+            //         'searchEpMembers',
+            //         webParam
+            //     )
+            //     if (res.status == 200) {
+            //         phonebar.log(
+            //             `查询${gn} 组成员成功返回 ${
+            //                 res.returnData.recordsTotal
+            //             } 人`,
+            //             res
+            //         )
+            //         for (const member of res.returnData.data) {
+            //             //会话状态   0 离线  1 空闲  2 忙碌
+            //             phonebar.log(
+            //                 `${member.displayname} 状态 ${member.kefuStatus}`
+            //             )
+            //         }
+            //     }
+            // } else {
+            //     phonebar.log('获取技能组失败', res)
+            // }
             let eventCallback = {
                 register: function(res) {
                     if (res.code == 200) {
@@ -100,15 +100,13 @@ phonebar.getUser(
                         setTimeout(() => {
                             // 登陆成功之后，可以呼出
                             // 呼外线
-                            // phonebar.call({
-                            //     peerID: '9' + calloutnumber,
-                            //     callType: 2
-                            // })
+                            let calltype = phonebar.call(calloutnumber)
+                            phonebar.log(
+                                '呼' + (calltype == 2 ? '外线' : '内线')
+                            )
                             // 呼内线
-                            // phonebar.call({
-                            //     peerID: callinnumber,
-                            //     callType: 3
-                            // })
+                            // let calltype = phonebar.call(callinnumber)
+                            // phonebar.log('呼',(calltype ==2 ? "外线":"内线"))
                         }, 2000)
                     }
                 },
@@ -145,7 +143,7 @@ phonebar.getUser(
                                 msg = msg || '呼叫失败'
                                 phonebar.log(msg)
                             } else {
-                                phonebar.log('呼叫成功', ccNumber)
+                                phonebar.log('呼叫成功', data)
                             }
                             break
                         case 'callinFaildResponse':
@@ -184,6 +182,11 @@ phonebar.getUser(
                                 // 获取坐席状态
                                 seatStatelog()
                             }, 10000)
+
+                            setTimeout(() => {
+                                phonebar.log(`30秒后挂机`)
+                                phonebar.terminate(ccNumber)
+                            }, 30000)
                             break
                         case 'endPBXCall':
                             // 获取坐席状态
@@ -213,7 +216,7 @@ phonebar.getUser(
                 pwd: pwd,
                 gid: gid
             }
-            //phonebar.init(params, eventCallback)
+            phonebar.init(params, eventCallback)
         } else {
             phonebar.log('获取用户信息失败', err)
         }
