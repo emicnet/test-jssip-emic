@@ -24,7 +24,8 @@
                         "targets": {
                             "chrome": "66",
                             "firefox": "60",
-                            "safari": "11"
+                            "safari": "11",
+                            "edge": "76"
                         },
                         "debug": true
                     }
