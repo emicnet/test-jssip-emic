@@ -20,5 +20,8 @@ module.exports = {
             }
         ]
     },
+    devServer: {
+        writeToDisk: true
+    },
     devtool: 'source-map'
 }
