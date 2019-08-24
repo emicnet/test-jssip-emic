@@ -2,7 +2,7 @@
 
 注意事项如下
 
-###babel 版本
+### babel 版本
 
 jssip-emicnet 使用 babel 6, "babel-preset-env": "^1.7.0",
 使用 jssip-emicnet 时候 如果用 babel 7 `@babel/preset-env` webpack打包会出错 
