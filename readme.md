@@ -55,3 +55,13 @@ devServer: {
 
 
 
+### jssip-emicnet  版本修改历史
+
+1. 1.3之前版本主要是实现UI工具条；1.2.8开始提供 umd打包方式便于api调用。
+2. 1.3.3  eslint+prettier设置更新， 发布mocha 测试用例；同时 1.3.2 发布时忘了 npm bundle就npm publish造成1.3.2不可用。
+3. 1.3.4 更新call接口，调用只传被叫号码，由 jssip-emicnet来判断是呼内线还是外线，并通过返回值告知调用者。
+4. 1.3.5 webRTC网关配置正式的https证书，更新的相应域名；去掉 mocha 测试用例的发布；更新接口文档，当使用的网关非缺省网关， init需要传 `socketUri` 参数。
+
+
+
+注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
