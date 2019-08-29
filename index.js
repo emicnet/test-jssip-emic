@@ -6,7 +6,7 @@ phonebar.log('正在获取用户信息。。。')
 let un = 1006
 let pwd = '1006'
 let switchnumber = '02566699734'
-let gid = 2040
+let gid = 0
 let calloutnumber = '10010'
 let callinnumber = '1024'
 let callfailedReason = {
@@ -44,7 +44,8 @@ phonebar.getUser(
             phonebar.log('用户信息', memberInfo.userData)
             for (const group of memberInfo.inGroups) {
                 phonebar.log('组信息', group)
-                let gid = group.id
+                //调用init需要设置,如果在多个组，登录时就取最后一个组
+                gid = group.id
             }
             var userData = JSON.parse(localStorage.userData)
             var webParam = {
@@ -70,9 +71,7 @@ phonebar.getUser(
                 )
                 if (res.status == 200) {
                     phonebar.log(
-                        `查询${gn} 组成员成功返回 ${
-                            res.returnData.recordsTotal
-                        } 人`,
+                        `查询${gn} 组成员成功返回 ${res.returnData.recordsTotal} 人`,
                         res
                     )
                     for (const member of res.returnData.data) {
@@ -216,7 +215,13 @@ phonebar.getUser(
                 pwd: pwd,
                 gid: gid
             }
-            phonebar.init(params, eventCallback)
+            phonebar.log('init 参数', params)
+            let reg = phonebar.init(params, eventCallback)
+            if (reg) {
+                phonebar.log('phonebar.init 发起注册')
+            } else {
+                phonebar.log('phonebar.init 没有发起注册，参数有问题')
+            }
         } else {
             phonebar.log('获取用户信息失败', err)
         }
