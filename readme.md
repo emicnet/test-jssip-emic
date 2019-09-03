@@ -65,6 +65,6 @@ devServer: {
    1. 回调函数如果是api文档要求必须提供的，1.3.5之前版本都会检查如果不提供就不发起注册请求，直接返回。但是实际使用中还是发生没有提供的情况，比如回调 kickedOffLine没有，但发现没有发起注册，询问原因。所以现在改成，必填回调没提供只是打log，但还是发起注册。 
    2. Phone.init的返回值是 true/false， true表示参数检测通过，发起注册, false参数检测失败，没法发起注册。
 
-
+6. 1.3.7 为客户正式部署webRTC服务器，改用 emicloud.com的域名以及正式的https证书。`Phone.init` 的socketUri参数对正式商用用户是必填的参数，不填会连到开发服务器。
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。

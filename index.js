@@ -213,7 +213,8 @@ phonebar.getUser(
                 un: un,
                 switchnumber: switchnumber,
                 pwd: pwd,
-                gid: gid
+                gid: gid,
+                socketUri: 'wss://webrtc01.emicloud.com:9060'
             }
             phonebar.log('init 参数', params)
             let reg = phonebar.init(params, eventCallback)
