@@ -194,8 +194,12 @@ phonebar.getUser(
                             break
                     }
                 },
-                kickedOffLine: function(type, data) {
-                    phonebar.log(type, data)
+                kickedOffLine: function(data) {
+                    phonebar.log(data)
+                    if (data.r == '895') {
+                        phonebar.logout()
+                        phonebar.log('Logout!')
+                    }
                 },
                 statusChanged: data => {
                     if (data.status == '0') {
