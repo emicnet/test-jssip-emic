@@ -64,7 +64,7 @@ devServer: {
 5. 1.3.6 `Phone.init` 参数检测做几个小的改动:  
    1. 回调函数如果是api文档要求必须提供的，1.3.5之前版本都会检查如果不提供就不发起注册请求，直接返回。但是实际使用中还是发生没有提供的情况，比如回调 kickedOffLine没有，但发现没有发起注册，询问原因。所以现在改成，必填回调没提供只是打log，但还是发起注册。 
    2. Phone.init的返回值是 true/false， true表示参数检测通过，发起注册, false参数检测失败，没法发起注册。
-
 6. 1.3.7 为客户正式部署webRTC服务器，改用 emicloud.com的域名以及正式的https证书。`Phone.init` 的socketUri参数对正式商用用户是必填的参数，不填会连到开发服务器。
+7. 1.3.8 为了解决同一个账户在局域网内不同机器同时登录的问题（局域网对外通常只有一个公网IP，所以我们sip服务器需要特殊处理才能区分这是两个不同的登录操作）；当收到踢下线消息，我们的库代码会自动把用户下线；所以这时候只要更新相应的UI界面就可以。
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。

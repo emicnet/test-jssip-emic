@@ -27,11 +27,13 @@ async function test_getGroups() {
     localStorage.removeItem('userData')
     //var res = await phonebar.webApiHandler('getGroups', webParam0)
     var res = await phonebar.webApiHandler('searchEpMembers', webParam0)
-    if (res.status != 200) phonebar.log(res.info)
-    else phonebar.log('成功调用phonebar.webApiHandler')
+    if (res.status != 200) {
+        phonebar.log('调用phonebar.webApiHandler出错')
+        phonebar.log(res)
+    } else phonebar.log('成功调用phonebar.webApiHandler')
 }
 
-test_getGroups()
+//test_getGroups()
 
 phonebar.getUser(
     un,
@@ -196,10 +198,10 @@ phonebar.getUser(
                 },
                 kickedOffLine: function(data) {
                     phonebar.log(data)
-                    if (data.r == '895') {
-                        phonebar.logout()
-                        phonebar.log('Logout!')
-                    }
+                    phonebar.log(
+                        '收到下线消息，账户也会被强制下线，这时候只需要更新相应UI就可以'
+                    )
+                    phonebar.logout()
                 },
                 statusChanged: data => {
                     if (data.status == '0') {

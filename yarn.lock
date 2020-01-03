@@ -2654,17 +2654,17 @@ json5@^1.0.1:
     minimist "^1.2.0"
 
 jssip-emicnet@^1.3.3:
-  version "1.3.7"
-  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-1.3.7.tgz#6e3469cae13e1fd623b44e5001669299fca3dc74"
-  integrity sha512-pnoYS4Su42cRGM+qezGM8Bi8Abbq7llVAf3TQcvuT2gDsGQljF1uGUXlvXoRJ6XH9mFztOtBIJqfHt4mNF3PNQ==
+  version "1.3.8"
+  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-1.3.8.tgz#df18969e10d13a71e97aed912a2f98cf688782dc"
+  integrity sha512-848zMWV6GCC4+ZVPVyVMqYQaXCfpRyO775gpfD0vAf8+mn3xqyMK97e0ZVmr162ufdlzBlZ3g9d0+3SE1lRtwA==
   dependencies:
     jssip "^3.3.6"
     spark-md5 "^3.0.0"
 
 jssip@^3.3.6:
-  version "3.3.7"
-  resolved "https://registry.npmjs.org/jssip/-/jssip-3.3.7.tgz#91a69dae389c5461a4bcafab96f4193c50a56207"
-  integrity sha512-3jbXRWOVKYw5rG8Do8zu1RpvjCNy4LmWwa3ako2USAotCMM5VysItwIQT19A1f5At3/NF0JxxTYHx6Dkg+rtfw==
+  version "3.3.11"
+  resolved "https://registry.npmjs.org/jssip/-/jssip-3.3.11.tgz#2af9656e8908ec88b1870473345f277acd2c3248"
+  integrity sha512-1fHHX/ISNc2WRoK0k43hUAuRiEsLvwBcEGG5i3P4s7tayKEn/aQWuh1gKEPjuSEWMp/t7k5e657Fsqjh6ynHhw==
   dependencies:
     debug "^4.1.1"
     events "^3.0.0"
@@ -3823,9 +3823,9 @@ schema-utils@^1.0.0:
     ajv-keywords "^3.1.0"
 
 sdp-transform@^2.7.0:
-  version "2.12.0"
-  resolved "https://registry.npmjs.org/sdp-transform/-/sdp-transform-2.12.0.tgz#5bb3d59ace6fd60bd7d0e436cbb8a058184f4ee2"
-  integrity sha512-ZSVdd05/31SqurCXcoQTNnBmhVK92xYHdVc5Cim2bjzDSBZhytbZYiGe6PYeU3VZzesvDu+kRs8G2qs6LybdVw==
+  version "2.13.0"
+  resolved "https://registry.npmjs.org/sdp-transform/-/sdp-transform-2.13.0.tgz#4d9432f8e327e15a310e570a11fa5a403b9da054"
+  integrity sha512-3zT7pcjR090E0WCV9eOtFX06iojoNKsyMXqXs7clOs8sy+RoegR0cebmCuCrTKdY2jw1XhT9jkraygJrqAUwzA==
 
 select-hose@^2.0.0:
   version "2.0.0"
