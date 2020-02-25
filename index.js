@@ -1,11 +1,11 @@
 import phonebar from 'jssip-emicnet/dist/phonebar'
-//import phonebar from '../JsSipWrap/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
 phonebar.log('正在获取用户信息。。。')
-let un = 1006
-let pwd = '1006'
-let switchnumber = '02566699734'
+let un = 1000
+let pwd = 'a123456A'
+let switchnumber = '01067440386'
 let gid = 0
 let calloutnumber = '10010'
 let callinnumber = '1024'
