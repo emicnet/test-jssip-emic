@@ -60,5 +60,6 @@ devServer: {
 6. 1.3.7 为客户正式部署 webRTC 服务器，改用 emicloud.com 的域名以及正式的 https 证书。`Phone.init` 的 socketUri 参数对正式商用用户是必填的参数，不填会连到开发服务器。
 7. 1.3.8 为了解决同一个账户在局域网内不同机器同时登录的问题（局域网对外通常只有一个公网 IP，所以我们 sip 服务器需要特殊处理才能区分这是两个不同的登录操作）；当收到踢下线消息，我们的库代码会自动把用户下线；所以这时候只要更新相应的 UI 界面就可以。
 8. 1.3.9 不从联调开户的总机号码需要单独处理，他们有自己的运维服务器。
+9. 1.4.0 提供支持sip话机登录的接口`getUser2` ，原有接口`getUser`不变， 只支持voip登录，详见api更新文档。
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。

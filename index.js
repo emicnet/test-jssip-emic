@@ -35,6 +35,132 @@ async function test_getGroups() {
 
 //test_getGroups()
 
+//演示代码，登录成功后发起呼叫
+let eventCallback = {
+    register: function(res) {
+        if (res.code == 200) {
+            phonebar.log('登录成功')
+            phonebar.log(phonebar.checkLogin())
+            setTimeout(() => {
+                phonebar.log('再次检查登录状态', phonebar.checkLogin())
+            }, 1000)
+
+            setTimeout(() => {
+                // 登陆成功之后，可以呼出
+                // 呼外线
+                let calltype = phonebar.call(calloutnumber)
+                phonebar.log('呼' + (calltype == 2 ? '外线' : '内线'))
+                // 呼内线
+                // let calltype = phonebar.call(callinnumber)
+                // phonebar.log('呼',(calltype ==2 ? "外线":"内线"))
+            }, 2000)
+        }
+    },
+    callEvent: function(type, data) {
+        phonebar.log('callback:callEvent', type, data)
+        switch (type) {
+            case 'newPBXCall':
+                var ccNumber = data.c
+                var isAnswer = confirm('来电接听')
+                // 获取坐席状态
+                seatStatelog()
+                phonebar.log('是否接听', isAnswer)
+                if (!isAnswer) {
+                    phonebar.terminate(ccNumber)
+                } else {
+                    phonebar.answerPBXCall(ccNumber)
+                }
+                break
+            case 'cancelPBXCall':
+                break
+            case 'callinResponse':
+                if (data.r != 200) {
+                    phonebar.log(`外呼内线响应状态${data.r}`)
+                }
+                // 获取坐席状态
+                seatStatelog()
+                break
+            case 'calloutResponse':
+                //获取ccnumber 通话唯一标识
+                var ccNumber = data.r == 200 ? data.c : undefined
+                if (data.r != 200) {
+                    phonebar.log(`响应状态${data.r}`)
+                    let msg = callfailedReason[data.r]
+                    msg = msg || '呼叫失败'
+                    phonebar.log(msg)
+                } else {
+                    phonebar.log('服务器处理呼叫请求', data)
+                }
+                break
+            case 'callinFaildResponse':
+                break
+            case 'answeredPBXCall':
+                // 获取坐席状态
+                seatStatelog()
+                var ccNumber = data.c ? data.c : undefined
+                // setTimeout(() => {
+                //     var isExist = confirm('坐席 1024 是否登陆')
+                //     if(!isExist) return
+                //     var isTransfer = confirm('是否转接')
+                //     if(!isTransfer) {
+                //         phonebar.terminate(ccNumber)
+                //     }else {
+                //         phonebar.transferPBXCall('2045','1024',ccNumber,function(type,data) {
+                //             if(res.type=='transferCallSuccess'){
+                //                 phonebar.log('transferCallSuccess')
+                //             }
+                //             if(res.type=='transferCallFaild'){
+                //                 phonebar.log('transferCallFaild')
+                //             }
+                //         })
+                //     }
+                // },20000)
+
+                setTimeout(() => {
+                    // 呼叫保持后，对方会有语音提示
+                    phonebar.hold(ccNumber)
+                    // 获取坐席状态
+                    seatStatelog()
+                }, 2000)
+
+                setTimeout(() => {
+                    phonebar.unhold(ccNumber)
+                    // 获取坐席状态
+                    seatStatelog()
+                }, 10000)
+
+                setTimeout(() => {
+                    phonebar.log(`30秒后挂机`)
+                    phonebar.terminate(ccNumber)
+                }, 30000)
+                break
+            case 'endPBXCall':
+                // 获取坐席状态
+                seatStatelog()
+                phonebar.log('通话结束')
+                break
+        }
+    },
+    kickedOffLine: function(data) {
+        phonebar.log(data)
+        phonebar.log(
+            '收到下线消息，账户也会被强制下线，这时候只需要更新相应UI就可以'
+        )
+        phonebar.logout()
+    },
+    statusChanged: data => {
+        if (data.status == '0') {
+            phonebar.log('离线')
+        }
+        if (data.status == '1') {
+            phonebar.log('在线')
+        }
+        if (data.status == '2') {
+            phonebar.log('忙碌')
+        }
+    }
+}
+
 let call_handler = async (err, res) => {
     if (!err) {
         phonebar.log('获取用户信息,包含用户信息和组信息')
@@ -79,130 +205,7 @@ let call_handler = async (err, res) => {
         } else {
             phonebar.log('获取技能组失败', res)
         }
-        let eventCallback = {
-            register: function(res) {
-                if (res.code == 200) {
-                    phonebar.log('登录成功')
-                    phonebar.log(phonebar.checkLogin())
-                    setTimeout(() => {
-                        phonebar.log('再次检查登录状态', phonebar.checkLogin())
-                    }, 1000)
 
-                    setTimeout(() => {
-                        // 登陆成功之后，可以呼出
-                        // 呼外线
-                        let calltype = phonebar.call(calloutnumber)
-                        phonebar.log('呼' + (calltype == 2 ? '外线' : '内线'))
-                        // 呼内线
-                        // let calltype = phonebar.call(callinnumber)
-                        // phonebar.log('呼',(calltype ==2 ? "外线":"内线"))
-                    }, 2000)
-                }
-            },
-            callEvent: function(type, data) {
-                phonebar.log('callback:callEvent', type, data)
-                switch (type) {
-                    case 'newPBXCall':
-                        var ccNumber = data.c
-                        var isAnswer = confirm('来电接听')
-                        // 获取坐席状态
-                        seatStatelog()
-                        phonebar.log('是否接听', isAnswer)
-                        if (!isAnswer) {
-                            phonebar.terminate(ccNumber)
-                        } else {
-                            phonebar.answerPBXCall(ccNumber)
-                        }
-                        break
-                    case 'cancelPBXCall':
-                        break
-                    case 'callinResponse':
-                        if (data.r != 200) {
-                            phonebar.log(`外呼内线响应状态${data.r}`)
-                        }
-                        // 获取坐席状态
-                        seatStatelog()
-                        break
-                    case 'calloutResponse':
-                        //获取ccnumber 通话唯一标识
-                        var ccNumber = data.r == 200 ? data.c : undefined
-                        if (data.r != 200) {
-                            phonebar.log(`响应状态${data.r}`)
-                            let msg = callfailedReason[data.r]
-                            msg = msg || '呼叫失败'
-                            phonebar.log(msg)
-                        } else {
-                            phonebar.log('服务器处理呼叫请求', data)
-                        }
-                        break
-                    case 'callinFaildResponse':
-                        break
-                    case 'answeredPBXCall':
-                        // 获取坐席状态
-                        seatStatelog()
-                        var ccNumber = data.c ? data.c : undefined
-                        // setTimeout(() => {
-                        //     var isExist = confirm('坐席 1024 是否登陆')
-                        //     if(!isExist) return
-                        //     var isTransfer = confirm('是否转接')
-                        //     if(!isTransfer) {
-                        //         phonebar.terminate(ccNumber)
-                        //     }else {
-                        //         phonebar.transferPBXCall('2045','1024',ccNumber,function(type,data) {
-                        //             if(res.type=='transferCallSuccess'){
-                        //                 phonebar.log('transferCallSuccess')
-                        //             }
-                        //             if(res.type=='transferCallFaild'){
-                        //                 phonebar.log('transferCallFaild')
-                        //             }
-                        //         })
-                        //     }
-                        // },20000)
-
-                        setTimeout(() => {
-                            // 呼叫保持后，对方会有语音提示
-                            phonebar.hold(ccNumber)
-                            // 获取坐席状态
-                            seatStatelog()
-                        }, 2000)
-
-                        setTimeout(() => {
-                            phonebar.unhold(ccNumber)
-                            // 获取坐席状态
-                            seatStatelog()
-                        }, 10000)
-
-                        setTimeout(() => {
-                            phonebar.log(`30秒后挂机`)
-                            phonebar.terminate(ccNumber)
-                        }, 30000)
-                        break
-                    case 'endPBXCall':
-                        // 获取坐席状态
-                        seatStatelog()
-                        phonebar.log('通话结束')
-                        break
-                }
-            },
-            kickedOffLine: function(data) {
-                phonebar.log(data)
-                phonebar.log(
-                    '收到下线消息，账户也会被强制下线，这时候只需要更新相应UI就可以'
-                )
-                phonebar.logout()
-            },
-            statusChanged: data => {
-                if (data.status == '0') {
-                    phonebar.log('离线')
-                }
-                if (data.status == '1') {
-                    phonebar.log('在线')
-                }
-                if (data.status == '2') {
-                    phonebar.log('忙碌')
-                }
-            }
-        }
         let params = {
             un: un,
             switchnumber: switchnumber,
@@ -211,6 +214,7 @@ let call_handler = async (err, res) => {
             socketUri: 'wss://webrtc01.emicloud.com:9060'
         }
         phonebar.log('init 参数', params)
+        //登录易米呼叫服务器
         let reg = phonebar.init(params, eventCallback)
         if (reg) {
             phonebar.log('phonebar.init 发起注册')
