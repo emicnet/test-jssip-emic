@@ -17,24 +17,6 @@ let callfailedReason = {
     '1000': '禁止拨打无权限坐席'
 }
 
-var webParam0 = {
-    un: 1006,
-    pwd: '1006',
-    eid: '10000'
-}
-//没有先调用phonebar.getUser获取坐席相关信息，这个调用会失败
-async function test_getGroups() {
-    localStorage.removeItem('userData')
-    //var res = await phonebar.webApiHandler('getGroups', webParam0)
-    var res = await phonebar.webApiHandler('searchEpMembers', webParam0)
-    if (res.status != 200) {
-        phonebar.log('调用phonebar.webApiHandler出错')
-        phonebar.log(res)
-    } else phonebar.log('成功调用phonebar.webApiHandler')
-}
-
-//test_getGroups()
-
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
     register: function(res) {
