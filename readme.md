@@ -50,6 +50,14 @@ devServer: {
 
 ### jssip-emicnet 版本修改历史
 
+易米有两套呼叫平台系统，对应不同客户和使用户场景。工具条 1.x版本都使用 呼叫平台 1；工具条 2.x版本都使用 呼叫平台 2
+
+我们会尽量做到1.x 版本和 2.x版本接口一致。
+
+注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
+
+#### 呼叫平台 1
+
 1. 1.3 之前版本主要是实现 UI 工具条；1.2.8 开始提供 umd 打包方式便于 api 调用。
 2. 1.3.3 eslint+prettier 设置更新， 发布 mocha 测试用例；同时 1.3.2 发布时忘了 npm bundle 就 npm publish 造成 1.3.2 不可用。
 3. 1.3.4 更新 call 接口，调用只传被叫号码，由 jssip-emicnet 来判断是呼内线还是外线，并通过返回值告知调用者。
@@ -62,5 +70,10 @@ devServer: {
 8. 1.3.9 不从联调开户的总机号码需要单独处理，他们有自己的运维服务器。
 9. 1.4.0 提供支持sip话机登录的接口`getUser2` ，原有接口`getUser`不变， 只支持voip登录，详见api更新文档。
 10. 1.4.1 呼出时候不指定外呼号码，由pbx来决定用哪个号码外呼。
+11. 1.4.4 因为北京联通护网行动，我们某客户需要使用第三方外呼平台号码，所以代码设置允许使用第三方平台号码。代码本身没有改动，就是配置文件做了修改。同时把开发环境使用nodejs从10升级12，重新打包一次。
 
-注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
+
+
+#### 呼叫平台2
+
+1. 2.0.0 首次提供对接第二套呼叫平台的接口
