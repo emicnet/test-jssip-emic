@@ -1,14 +1,17 @@
-import phonebar from 'jssip-emicnet/dist/phonebar'
-// import phonebar from '../JsSipWrap/dist/phonebar'
-localStorage.setItem('debug', 'phonebar:*')
-
+// import phonebar from 'jssip-emicnet/dist/phonebar'
+import phonebar from '../JsSipWrap/dist/phonebar'
+import isEqual from 'lodash.isequal'
+import get from 'lodash.get'
+localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
+// localStorage.setItem('debug', '*')
+// url 不用以 '/'结尾，但是加了 '/' 也能处理
+const backend = 'https://emic-cmb.emicloud.com'
 phonebar.log('正在获取用户信息。。。')
-let un = 1134
-let pwd = 'abc123456!'
-let switchnumber = '01017090153184'
-let gid = 0
-let calloutnumber = '10010'
-let callinnumber = '1024'
+let un = 7820
+let pwd = '12345678'
+let switchnumber = '02566687671'
+let calloutnumber = '13910134045'
+let callinnumber = '7821'
 let callfailedReason = {
     '503': '对方忙碌',
     '507': '总机号已停机',
@@ -99,6 +102,7 @@ let eventCallback = {
                 // },20000)
 
                 setTimeout(() => {
+                    phonebar.log(`2秒后呼叫保持`)
                     // 呼叫保持后，对方会有语音提示
                     phonebar.hold(ccNumber)
                     // 获取坐席状态
@@ -106,6 +110,7 @@ let eventCallback = {
                 }, 2000)
 
                 setTimeout(() => {
+                    phonebar.log(`10秒后呼叫恢复`)
                     phonebar.unhold(ccNumber)
                     // 获取坐席状态
                     seatStatelog()
@@ -120,6 +125,10 @@ let eventCallback = {
                 // 获取坐席状态
                 seatStatelog()
                 phonebar.log('通话结束')
+                setTimeout(() => {
+                    phonebar.log(`20秒后退出`)
+                    phonebar.logout()
+                }, 20000)
                 break
         }
     },
@@ -143,68 +152,93 @@ let eventCallback = {
     },
 }
 
-let call_handler = async (err, res) => {
-    if (!err) {
-        phonebar.log('获取用户信息,包含用户信息和组信息')
-        let memberInfo = res
-        phonebar.log('用户信息', memberInfo.userData)
-        for (const group of memberInfo.inGroups) {
-            phonebar.log('组信息', group)
-            //调用init需要设置,如果在多个组，登录时就取最后一个组
-            gid = group.id
+let call_handler = async (err, resposne) => {
+    if (err) {
+        phonebar.log('获取用户信息失败', err)
+        return
+    }
+    phonebar.log('获取用户信息,包含用户信息和组信息 ...')
+    let userData = resposne
+    let userData2 = JSON.parse(localStorage.userData)
+    if (isEqual(userData, userData2)) {
+        phonebar.log('正确获取了客户信息')
+        // phonebar.log('用户信息', localStorage.userData)
+    } else {
+        phonebar.log('没能正确获取了客户信息，sdk代码有 bug!!')
+        return
+    }
+    let gids = []
+    for (const group of userData.groupInfo) {
+        phonebar.log(`坐席所在组信息 ${group.name}, 技能组id ${group.gid}`)
+        gids.push(group.gid)
+    }
+    let res = await phonebar.getGroups()
+    if (!res) {
+        phonebar.log('获取技能组失败', res)
+        return
+    }
+    let onlines = res.data.filter((i) => {
+        // 0 全离线 1 有空闲 2 全忙碌
+        let state = get(i, 'group_real_time_state.state_id', 0)
+        return state == 1
+    })
+    phonebar.log(
+        `查询企业技能组信息，目前取了第${res.current_page}页数据，一共${res.last_page}页数据 ` +
+            `当前页有${onlines.length}组坐席有空闲`
+    )
+    let members, mygroup
+    for (const group of res.data) {
+        let gstatus = group.group_real_time_state
+        if (!gstatus) {
+            phonebar.log(`${group.name} : ${group.id} 这是测试数据`)
+            continue
         }
-        var userData = JSON.parse(localStorage.userData)
-        var webParam = {
-            un: 1006,
-            pwd: '1006',
-            eid: userData.eid,
-            //eid: '6565' //不存在eid res.status 50008
+        phonebar.log(`${group.name} : ${group.gid} : ${gstatus.state_name}`)
+        if (gids.includes(group.gid) && gstatus.state_id == 1) {
+            phonebar.log(
+                `坐席在这个组 ${group.gid} 目前有其他坐席在线,获取它的组员信息`
+            )
+            members = phonebar.getGroupMembers({ gid: group.gid })
+            mygroup = group
         }
-        var res = await phonebar.webApiHandler('getGroups', webParam)
+    }
+    //current_page 是当前取了第几页数据，last_page是最后一页数据
+    let pages = res.last_page
+    phonebar.log(`一共有 ${pages} 页,示例再调用一次，取最后一页数据`)
+    phonebar.getGroups(pages)
+    if (members) {
+        res = await members
         if (res.status == 200) {
-            phonebar.log('获取了所有技能组:')
-            for (const group of res.returnData) {
-                //{group.id, group.eid, group.name}
-                phonebar.log(`${group.name} : ${group.id}`)
+            let seats = res.data[0]
+            phonebar.log(
+                `查询坐席所在 ${mygroup.name} 组成员成功返回 ${seats.seats.length} 人, 一共${seats.last_page}页数据 `
+            )
+            seats = seats.seats
+            //成员状态 state_id 1 离线 2 在线
+            onlines = seats.filter((i) => i.seat_real_time_state.state_id == 2)
+            phonebar.log(`目前一共${onlines.length}人在线`)
+            for (const member of seats) {
+                let mstatus = member.seat_real_time_state
+                phonebar.log(`${member.displayname} 状态 ${mstatus.state_name}`)
             }
-            const gn = res.returnData[0].name
-            const gi = res.returnData[0].id
-            webParam.searchGid = gi //'1000000015'
-            webParam.length = 10
-            var res = await phonebar.webApiHandler('searchEpMembers', webParam)
-            if (res.status == 200) {
-                phonebar.log(
-                    `查询${gn} 组成员成功返回 ${res.returnData.recordsTotal} 人`,
-                    res
-                )
-                for (const member of res.returnData.data) {
-                    //会话状态   0 离线  1 空闲  2 忙碌
-                    phonebar.log(
-                        `${member.displayname} 状态 ${member.kefuStatus}`
-                    )
-                }
-            }
-        } else {
-            phonebar.log('获取技能组失败', res)
-        }
-
-        let params = {
-            un: un,
-            switchnumber: switchnumber,
-            pwd: pwd,
-            gid: gid,
-            socketUri: 'wss://webrtc01.emicloud.com:9060',
-        }
-        phonebar.log('init 参数', params)
-        //登录易米呼叫服务器
-        let reg = phonebar.init(params, eventCallback)
-        if (reg) {
-            phonebar.log('phonebar.init 发起注册')
-        } else {
-            phonebar.log('phonebar.init 没有发起注册，参数有问题')
         }
     } else {
-        phonebar.log('获取用户信息失败', err)
+        phonebar.log('坐席所在的技能组目前都没有其他坐席在线')
+    }
+    let params = {
+        un: un,
+        switchnumber: switchnumber,
+        pwd: pwd,
+        gid: mygroup.id, //sip注册用 id， web查询用 gid
+    }
+    // return
+    phonebar.log('init 参数', params)
+    //登录易米呼叫服务器
+    let reg = phonebar.init(params, eventCallback)
+    if (reg) {
+        phonebar.log('phonebar.init 发起注册')
+    } else {
+        phonebar.log('phonebar.init 没有发起注册，参数有问题')
     }
 }
 
@@ -237,6 +271,7 @@ phonebar.getUser2(
         un,
         pwd, //密码需要加引号
         switchnumber,
+        backend,
         // callintype: 5,
         // number: 10000,
     },
