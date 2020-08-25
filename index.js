@@ -1,5 +1,5 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 import isEqual from 'lodash.isequal'
 import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
@@ -10,7 +10,7 @@ phonebar.log('正在获取用户信息。。。')
 let un = 7820
 let pwd = '12345678'
 let switchnumber = '02566687671'
-let calloutnumber = '13910134045'
+let calloutnumber = '02510010'
 let callinnumber = '7821'
 let callfailedReason = {
     '503': '对方忙碌',
