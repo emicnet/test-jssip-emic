@@ -1,6 +1,25 @@
+##  js sdk 发布说明 
+
+webrtc 工具条 js sdk 发布根据 js 发布同行做法，发布到 https://www.npmjs.com/package/jssip-emicnet
+
+同时给客户提供在github上的使用示例和接口文档 https://github.com/emicnet/test-jssip-emic 
+
+打开 https://github.com/emicnet/test-jssip-emic 项目有版本的发布历史说明。
+
+[api接口文档](https://github.com/emicnet/test-jssip-emic/blob/master/api接口文档.pdf) 详述sdk 提供的接口 
+
+示例使用说明：
+
+1. git clone https://github.com/emicnet/test-jssip-emic.git 
+
+2. 进到项目目录，首次安装执行 npm install 以后每次sdk包升级执行 npm install
+
+3. 然后 执行 npm start 运行示例代码
+
+
 测试 jssip-emicnet `npm install & npm start`
 
-注意事项如下
+## 注意事项如下
 
 ### babel 版本
 
