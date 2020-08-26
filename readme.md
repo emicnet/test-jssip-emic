@@ -1,12 +1,10 @@
 ##  js sdk 发布说明 
 
-webrtc 工具条 js sdk 发布根据 js 发布同行做法，发布到 https://www.npmjs.com/package/jssip-emicnet
+webrtc 工具条 js sdk 发布根据 js 发布通行做法，发布到 https://www.npmjs.com/package/jssip-emicnet
 
-同时给客户提供在github上的使用示例和接口文档 https://github.com/emicnet/test-jssip-emic 
+同时给客户提供在[github上的使用示例和接口文档](https://github.com/emicnet/test-jssip-emic) 打开 https://github.com/emicnet/test-jssip-emic 项目有版本的发布历史说明。
 
-打开 https://github.com/emicnet/test-jssip-emic 项目有版本的发布历史说明。
-
-[api接口文档](https://github.com/emicnet/test-jssip-emic/blob/master/api接口文档.pdf) 详述sdk 提供的接口 
+[api接口文档](https://github.com/emicnet/test-jssip-emic/blob/master/api接口文档.pdf) 详述sdk 提供的接口 .
 
 示例使用说明：
 
