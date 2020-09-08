@@ -1,5 +1,5 @@
-import phonebar from 'jssip-emicnet/dist/phonebar'
-// import phonebar from '../JsSipWrap/dist/phonebar'
+// import phonebar from 'jssip-emicnet/dist/phonebar'
+import phonebar from '../JsSipWrap/dist/phonebar'
 import isEqual from 'lodash.isequal'
 import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
@@ -7,17 +7,17 @@ localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
 // url 不用以 '/'结尾，但是加了 '/' 也能处理
 const backend = 'https://emic-cmb.emicloud.com'
 phonebar.log('正在获取用户信息。。。')
-let un = 7820
+let un = 7821
 let pwd = '12345678'
 let switchnumber = '02566687671'
 let calloutnumber = '02510010'
 let callinnumber = '7821'
 let callfailedReason = {
-    '503': '对方忙碌',
-    '507': '总机号已停机',
-    '508': '非工作时间',
-    '512': '该客户今日被呼叫次数已达上限',
-    '1000': '禁止拨打无权限坐席',
+    503: '对方忙碌',
+    507: '总机号已停机',
+    508: '非工作时间',
+    512: '该客户今日被呼叫次数已达上限',
+    1000: '禁止拨打无权限坐席',
 }
 
 //演示代码，登录成功后发起呼叫
@@ -39,6 +39,8 @@ let eventCallback = {
                 // let calltype = phonebar.call(callinnumber)
                 // phonebar.log('呼',(calltype ==2 ? "外线":"内线"))
             }, 2000)
+        } else {
+            phonebar.log(`${res.code}:${res.info}:${res.cause}`)
         }
     },
     callEvent: function (type, data) {
@@ -167,7 +169,8 @@ let call_handler = async (err, resposne) => {
         phonebar.log('没能正确获取了客户信息，sdk代码有 bug!!')
         return
     }
-    let gids = []
+    let gids = [],
+        mygroup = userData.groupInfo[0]
     for (const group of userData.groupInfo) {
         phonebar.log(`坐席所在组信息 ${group.name}, 技能组id ${group.gid}`)
         gids.push(group.gid)
@@ -186,7 +189,7 @@ let call_handler = async (err, resposne) => {
         `查询企业技能组信息，目前取了第${res.current_page}页数据，一共${res.last_page}页数据 ` +
             `当前页有${onlines.length}组坐席有空闲`
     )
-    let members, mygroup
+    let members
     for (const group of res.data) {
         let gstatus = group.group_real_time_state
         if (!gstatus) {
