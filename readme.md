@@ -14,8 +14,9 @@ webrtc 工具条 js sdk 发布根据 js 发布通行做法，发布到 https://w
 
 3. 然后 执行 npm start 运行示例代码
 
-
 测试 jssip-emicnet `npm install & npm start`
+
+有新版sdk发布，执行 `npm update jssip-emicnet` 
 
 ## 注意事项如下
 
@@ -94,3 +95,5 @@ devServer: {
 #### 呼叫平台2
 
 1. 2.0.0 首次提供对接第二套呼叫平台的接口。对应api接口改动请参见 **api接口文档**  和 示例代码 。注意从   jssip-emicnet 1.x 升级到 2.x ，因为跨越不兼容的大版本变化，不能用 `npm update jssip-emicnet` 必须用 `npm install jssip-emicnet@latest`
+
+2. 2.0.1 修改 测试组提出几个问题。

@@ -1,5 +1,5 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 import isEqual from 'lodash.isequal'
 import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
@@ -7,10 +7,10 @@ localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
 // url 不用以 '/'结尾，但是加了 '/' 也能处理
 const backend = 'https://emic-cmb.emicloud.com'
 phonebar.log('正在获取用户信息。。。')
-let un = 7821
+let un = 7820
 let pwd = '12345678'
 let switchnumber = '02566687671'
-let calloutnumber = '02510010'
+let calloutnumber = '95588'
 let callinnumber = '7821'
 let callfailedReason = {
     503: '对方忙碌',
@@ -169,8 +169,8 @@ let call_handler = async (err, resposne) => {
         phonebar.log('没能正确获取了客户信息，sdk代码有 bug!!')
         return
     }
-    let gids = [],
-        mygroup = userData.groupInfo[0]
+    let gids = []
+        // mygroup = userData.groupInfo[0]
     for (const group of userData.groupInfo) {
         phonebar.log(`坐席所在组信息 ${group.name}, 技能组id ${group.gid}`)
         gids.push(group.gid)
@@ -189,7 +189,7 @@ let call_handler = async (err, resposne) => {
         `查询企业技能组信息，目前取了第${res.current_page}页数据，一共${res.last_page}页数据 ` +
             `当前页有${onlines.length}组坐席有空闲`
     )
-    let members
+    let members,mygroup
     for (const group of res.data) {
         let gstatus = group.group_real_time_state
         if (!gstatus) {
