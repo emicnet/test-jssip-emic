@@ -275,8 +275,8 @@ phonebar.getUser2(
         pwd, //密码需要加引号
         switchnumber,
         backend,
-        // callintype: 5,
-        // number: 10000,
+        // callintype: 4,
+        // number: 'xxxx', //设置回拨号码，注意 number是字符串
     },
     call_handler
 )

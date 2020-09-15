@@ -2706,13 +2706,14 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-jssip-emicnet@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-2.0.0.tgz#fb5ff8323cdbc3ff4a4d4c498d8fb32231dc84d6"
-  integrity sha512-cvIIhU2Cr/mJIfA7Nsjc01DMO1Ng2MrokIr6bvGn6sjaxRD8zrReoZJrijkK9Z5caCi+02AiRXhHNHdUtDk8/w==
+jssip-emicnet@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-2.0.1.tgz#08dcad1cad24b1abda2bbcb3fcb6c124289293c9"
+  integrity sha512-4Vof8JWnpcnWZIxPg7zXTX93OSsuERNof0Kcy2j/HvBHSxW9Xlt0tRjX4Ei1JaQSpke5fda9+2qbXqQcD7VmPw==
   dependencies:
     crypto-js "^4.0.0"
     jssip "^3.5.5"
+    lodash.get "^4.4.2"
     randomstring "^1.1.5"
     spark-md5 "^3.0.0"
 
