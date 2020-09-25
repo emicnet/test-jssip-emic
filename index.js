@@ -12,13 +12,6 @@ let pwd = '12345678'
 let switchnumber = '02566687671'
 let calloutnumber = '95588' //拨打工行自主电话
 let callinnumber = '7821'
-let callfailedReason = {
-    503: '对方忙碌',
-    507: '总机号已停机',
-    508: '非工作时间',
-    512: '该客户今日被呼叫次数已达上限',
-    1000: '禁止拨打无权限坐席',
-}
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
@@ -40,6 +33,8 @@ let eventCallback = {
                 // phonebar.log('呼',(calltype ==2 ? "外线":"内线"))
             }, 2000)
         } else {
+            //res.info 是注册失败的原因说明，res.cause是错误码，
+            //res.code为 403 或其他sip注册失败返回值
             phonebar.log(`${res.code}:${res.info}:${res.cause}`)
         }
     },
@@ -62,7 +57,7 @@ let eventCallback = {
                 break
             case 'callinResponse':
                 if (data.r != 200) {
-                    phonebar.log(`外呼内线响应状态${data.r}`)
+                    phonebar.log(`呼叫失败${data.r}:${data.info}`)
                 }
                 // 获取坐席状态
                 seatStatelog()
@@ -71,10 +66,12 @@ let eventCallback = {
                 //获取ccnumber 通话唯一标识
                 var ccNumber = data.r == 200 ? data.c : undefined
                 if (data.r != 200) {
-                    phonebar.log(`响应状态${data.r}`)
-                    let msg = callfailedReason[data.r]
-                    msg = msg || '呼叫失败'
-                    phonebar.log(msg)
+                    //data.info 是呼叫失败的原因说明
+                    phonebar.log(`呼叫失败${data.r}:${data.info}`)
+                    setTimeout(() => {
+                        phonebar.log(`10秒后退出`)
+                        phonebar.logout()
+                    }, 10000)
                 } else {
                     phonebar.log('服务器处理呼叫请求', data)
                 }
