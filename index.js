@@ -7,19 +7,19 @@ let un = 1006
 let pwd = '1006'
 let switchnumber = '02566699734'
 let gid = 0
-let calloutnumber = '10010'
+let calloutnumber = '95588'
 let callinnumber = '1024'
 let callfailedReason = {
-    '503': '对方忙碌',
-    '507': '总机号已停机',
-    '508': '非工作时间',
-    '512': '该客户今日被呼叫次数已达上限',
-    '1000': '禁止拨打无权限坐席'
+    503: '对方忙碌',
+    507: '总机号已停机',
+    508: '非工作时间',
+    512: '该客户今日被呼叫次数已达上限',
+    1000: '禁止拨打无权限坐席',
 }
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
-    register: function(res) {
+    register: function (res) {
         if (res.code == 200) {
             phonebar.log('登录成功')
             phonebar.log(phonebar.checkLogin())
@@ -38,7 +38,7 @@ let eventCallback = {
             }, 2000)
         }
     },
-    callEvent: function(type, data) {
+    callEvent: function (type, data) {
         phonebar.log('callback:callEvent', type, data)
         switch (type) {
             case 'newPBXCall':
@@ -123,14 +123,14 @@ let eventCallback = {
                 break
         }
     },
-    kickedOffLine: function(data) {
+    kickedOffLine: function (data) {
         phonebar.log(data)
         phonebar.log(
             '收到下线消息，账户也会被强制下线，这时候只需要更新相应UI就可以'
         )
         phonebar.logout()
     },
-    statusChanged: data => {
+    statusChanged: (data) => {
         if (data.status == '0') {
             phonebar.log('离线')
         }
@@ -140,7 +140,7 @@ let eventCallback = {
         if (data.status == '2') {
             phonebar.log('忙碌')
         }
-    }
+    },
 }
 
 let call_handler = async (err, res) => {
@@ -157,7 +157,7 @@ let call_handler = async (err, res) => {
         var webParam = {
             un: 1006,
             pwd: '1006',
-            eid: userData.eid
+            eid: userData.eid,
             //eid: '6565' //不存在eid res.status 50008
         }
         var res = await phonebar.webApiHandler('getGroups', webParam)
@@ -193,7 +193,7 @@ let call_handler = async (err, res) => {
             switchnumber: switchnumber,
             pwd: pwd,
             gid: gid,
-            socketUri: 'wss://webrtc01.emicloud.com:9060'
+            socketUri: 'wss://webrtc-dev.emicloud.com:9060',
         }
         phonebar.log('init 参数', params)
         //登录易米呼叫服务器
@@ -237,8 +237,8 @@ phonebar.getUser2(
         un,
         pwd, //密码需要加引号
         switchnumber,
-        callintype: 5,
-        number: 10000
+        // callintype: 5,
+        // number: 10000,
     },
     call_handler
 )
