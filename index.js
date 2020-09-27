@@ -70,6 +70,10 @@ let eventCallback = {
                     let msg = callfailedReason[data.r]
                     msg = msg || '呼叫失败'
                     phonebar.log(msg)
+                    setTimeout(() => {
+                        phonebar.log(`10秒后退出`)
+                        phonebar.logout()
+                    }, 10000)
                 } else {
                     phonebar.log('服务器处理呼叫请求', data)
                 }
@@ -120,6 +124,10 @@ let eventCallback = {
                 // 获取坐席状态
                 seatStatelog()
                 phonebar.log('通话结束')
+                setTimeout(() => {
+                    phonebar.log(`20秒后退出`)
+                    phonebar.logout()
+                }, 20000)
                 break
         }
     },
