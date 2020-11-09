@@ -1,5 +1,5 @@
-import phonebar from 'jssip-emicnet/dist/phonebar'
-// import phonebar from '../JsSipWrap/dist/phonebar'
+// import phonebar from 'jssip-emicnet/dist/phonebar'
+import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
 phonebar.log('正在获取用户信息。。。')
@@ -203,7 +203,6 @@ let call_handler = async (err, res) => {
             gid: gid,
             socketUri: 'wss://webrtc-dev.emicloud.com:9060',
         }
-        phonebar.log('init 参数', params)
         //登录易米呼叫服务器
         let reg = phonebar.init(params, eventCallback)
         if (reg) {

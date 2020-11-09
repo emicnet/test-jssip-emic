@@ -5,6 +5,7 @@
     "main": "index.js",
     "scripts": {
         "start": "webpack-dev-server --mode development --open",
+        "monitor": "webpack-dev-server --mode development --open-page index2.html",
         "bundle": "BABEL_ENV='production' webpack --mode production"
     },
     "author": "",
