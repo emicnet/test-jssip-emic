@@ -27,84 +27,19 @@ let eventCallback = {
         if (res.code == 200) {
             log('登录成功，等待坐席的呼叫通知')
             log(phonebar.checkLogin())
-
-            setTimeout(() => {
-                // 登陆成功之后，开始监控
-            }, 2000)
         }
     },
     callEvent: function (type, data) {
-        log('callback:callEvent', type, data)
+        log(`callback:callEvent, ${type}`)
+        log(data)
+        let s = phonebar.monitorStatus
         switch (type) {
-            case 'newPBXCall':
-                var ccNumber = data.c
-                var isAnswer = confirm('来电接听')
-                // 获取坐席状态
-                seatStatelog()
-                log('是否接听', isAnswer)
-                if (!isAnswer) {
-                    phonebar.terminate(ccNumber)
-                } else {
-                    phonebar.answerPBXCall(ccNumber)
-                }
-                break
-            case 'cancelPBXCall':
-                break
-            case 'callinResponse':
-                if (data.r != 200) {
-                    log(`外呼内线响应状态${data.r}`)
-                }
-                // 获取坐席状态
-                seatStatelog()
-                break
-            case 'calloutResponse':
-                //获取ccnumber 通话唯一标识
-                var ccNumber = data.r == 200 ? data.c : undefined
-                if (data.r != 200) {
-                    log(`响应状态${data.r}`)
-                    let msg = callfailedReason[data.r]
-                    msg = msg || '呼叫失败'
-                    log(msg)
-                    setTimeout(() => {
-                        log(`10秒后退出`)
-                        phonebar.logout()
-                    }, 10000)
-                } else {
-                    log('服务器处理呼叫请求', data)
-                }
-                break
-            case 'callinFaildResponse':
-                break
             case 'answeredPBXCall':
-                // 获取坐席状态
-                seatStatelog()
-                var ccNumber = data.c ? data.c : undefined
-                setTimeout(() => {
-                    // 呼叫保持后，对方会有语音提示
-                    phonebar.hold(ccNumber)
-                    // 获取坐席状态
-                    seatStatelog()
-                }, 2000)
-
-                setTimeout(() => {
-                    phonebar.unhold(ccNumber)
-                    // 获取坐席状态
-                    seatStatelog()
-                }, 10000)
-
-                setTimeout(() => {
-                    log(`30秒后挂机`)
-                    phonebar.terminate(ccNumber)
-                }, 30000)
+                if (s.ccNumber == data.c)
+                    log('这是监听相关呼叫消息，这里可以直接忽略')
                 break
             case 'endPBXCall':
-                // 获取坐席状态
-                seatStatelog()
-                log('通话结束')
-                setTimeout(() => {
-                    log(`20秒后退出`)
-                    phonebar.logout()
-                }, 20000)
+                log('停止监听也会收到endPBXCall消息，这里可以直接忽略')
                 break
         }
     },
@@ -151,6 +86,8 @@ let eventCallback = {
                 }`
             )
             repcalls[data.caller] = data
+            log(`注意，5 秒后开始监控`)
+            setTimeout(demoMonitor, 5000)
         } else {
             //有记录，所以是结束呼叫通知
             if (
@@ -168,9 +105,8 @@ let eventCallback = {
                 )
             }
             delete repcalls[data.caller]
-
-            log(`目前本组有 ${Object.keys(repcalls).length} 个呼叫`)
         }
+        log(`目前本组有 ${Object.keys(repcalls).length} 个呼叫`)
     },
 }
 
@@ -227,6 +163,110 @@ function seatStatelog(state) {
             log('当前坐席 保持')
             break
     }
+}
+
+function demoMonitor() {
+    let calles = Object.keys(repcalls)
+    if (calles.length == 0) {
+        log(`本组目前没有通话`)
+        return
+    }
+    let rep = calles[0]
+    let repData = repcalls[rep]
+    log(`首先静音监听 ${rep} 目前通话 ${repData.ccNumber}`)
+    let monitorStatus = phonebar.checkMonitorState()
+    log(`开始前监听状态值是 ${JSON.stringify(monitorStatus)}`)
+    phonebar.startCallMonitor(repData.ccNumber, (result) => {
+        if (result != 0) {
+            log(`监听失败`)
+            return
+        }
+        monitorStatus = phonebar.checkMonitorState()
+        log(
+            `监听开始，目前的监听状态值是 ${JSON.stringify(
+                monitorStatus
+            )}, 30秒后退出监听`
+        )
+        setTimeout(demoStopMonitor, 30000, repData.ccNumber, demoJoin)
+    })
+}
+
+function demoStopMonitor(ccNumber, next) {
+    phonebar.stopCallMonitor(ccNumber, (result) => {
+        if (result != 0) {
+            log(`退出监听失败`)
+            return
+        }
+        let monitorStatus = phonebar.checkMonitorState()
+        log(
+            `退出监听, 目前的监听状态值是 ${JSON.stringify(
+                monitorStatus
+            )} 10 秒后开始演示 监听和三方通话`
+        )
+        setTimeout(next, 10000, ccNumber)
+    })
+}
+
+function demoJoin(ccNumber) {
+    //辅助函数，做流程控制，三方通话先要经过监听
+    function flowControl(afterJoin) {
+        phonebar.startCallMonitor(ccNumber, (result) => {
+            if (result != 0) return
+            let monitorStatus = phonebar.checkMonitorState()
+            log(
+                `要进入三方通话，首先要处在监听状态，目前的监听状态值是 ${JSON.stringify(
+                    monitorStatus
+                )}, 20秒后进入三方通话`
+            )
+            setTimeout(join, 20000, ccNumber, afterJoin)
+        })
+    }
+    function join(ccNumber, next) {
+        phonebar.joinFromMonitor(ccNumber, (result) => {
+            if (result != 0) {
+                log(`加入三方会议失败`)
+                return
+            }
+            let monitorStatus = phonebar.checkMonitorState()
+            log(
+                `三方会议中, 目前的监听状态值是 ${JSON.stringify(
+                    monitorStatus
+                )} 30秒后结束三方通话`
+            )
+            setTimeout(next, 30000, ccNumber)
+        })
+    }
+    log(`先演示加入三方，从三方退出；1分钟后再演示加入三方，然后结束整个通话`)
+    flowControl(demoExitJoin)
+    setTimeout(flowControl, 60000, demoEndJoin)
+}
+
+function demoExitJoin(ccNumber) {
+    phonebar.exitJoinMonitor(ccNumber, (result) => {
+        if (result != 0) {
+            log(`退出三方通话失败`)
+            return
+        }
+        let monitorStatus = phonebar.checkMonitorState()
+        log(
+            `已从三方会议退出, 目前的监听状态值是 ${JSON.stringify(
+                monitorStatus
+            )} `
+        )
+    })
+}
+
+function demoEndJoin(ccNumber) {
+    phonebar.endCallMonitor(ccNumber, (result) => {
+        if (result != 0) {
+            log(`结束三方通话失败`)
+            return
+        }
+        let monitorStatus = phonebar.checkMonitorState()
+        log(
+            `结束三方会议, 目前的监听状态值是 ${JSON.stringify(monitorStatus)} `
+        )
+    })
 }
 
 phonebar.getUser2(
