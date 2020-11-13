@@ -8,6 +8,8 @@ let pwd = '1006'
 let switchnumber = '02566699734'
 let gid = 0
 let calloutnumber = '95588'
+let encrpyt = 'opwmRvGhOcGMXRZSp_moOQ'
+let times = 0
 let callinnumber = '1024'
 let callfailedReason = {
     503: '对方忙碌',
@@ -106,28 +108,37 @@ let eventCallback = {
                     // 呼叫保持后，对方会有语音提示
                     phonebar.hold(ccNumber)
                     // 获取坐席状态
+                    phonebar.log(`呼叫保持`)
                     seatStatelog()
                 }, 2000)
 
                 setTimeout(() => {
                     phonebar.unhold(ccNumber)
                     // 获取坐席状态
+                    phonebar.log(`取消呼叫保持`)
                     seatStatelog()
                 }, 10000)
 
                 setTimeout(() => {
-                    phonebar.log(`30秒后挂机`)
+                    phonebar.log(`挂机`)
                     phonebar.terminate(ccNumber)
                 }, 30000)
+                phonebar.log(`2秒设置呼叫保持，10秒后回复，30秒后挂机`)
                 break
             case 'endPBXCall':
                 // 获取坐席状态
                 seatStatelog()
-                phonebar.log('通话结束')
+                phonebar.log('通话结束，等待10秒 下一个演示 ...')
                 setTimeout(() => {
-                    phonebar.log(`20秒后退出`)
-                    phonebar.logout()
-                }, 20000)
+                    if (times == 1) {
+                        phonebar.log(`已经呼叫过 ${encrpyt} 退出登录`)
+                        phonebar.logout()
+                    } else {
+                        phonebar.log(`呼叫 ${encrpyt} ，大概30秒后退出`)
+                        phonebar.call(encrpyt, 'encrpyt')
+                        times = 1
+                    }
+                }, 10000)
                 break
         }
     },
