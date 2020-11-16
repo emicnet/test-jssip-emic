@@ -1,5 +1,5 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 import debug from 'debug'
 localStorage.setItem('debug', 'phonebar:*')
 

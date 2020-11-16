@@ -1,5 +1,5 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
 phonebar.log('正在获取用户信息。。。')
