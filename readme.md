@@ -62,7 +62,9 @@ devServer: {
 8. 1.3.9 不从联调开户的总机号码需要单独处理，他们有自己的运维服务器。
 9. 1.4.0 提供支持sip话机登录的接口`getUser2` ，原有接口`getUser`不变， 只支持voip登录，详见api更新文档。
 10. 1.4.1 外呼号码不止使用登录总机号，而是从企业外呼资源池选
-11. 14.2 至 1.4.5内部开发调试版本，主要改动 node 10升级到 node 12，使用node 12打包发布
+11. 1.4.2 至 1.4.5内部开发调试版本，主要改动 node 10升级到 node 12，使用node 12打包发布
 12. 1.4.6 开始提供呼叫号码加密功能
+13. 1.5.0 提供班长监控功能
+
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。

@@ -4,10 +4,13 @@ const webpack = require('webpack') //to access built-in plugins
 const path = require('path')
 
 module.exports = {
-    entry: './index.js',
+    entry: {
+        index: './index.js',
+        monitor: './monitor.js',
+    },
     output: {
-        path: path.resolve(__dirname, './'),
-        filename: 'bundle.js'
+        path: path.resolve(__dirname, './dist'),
+        filename: '[name].js',
     },
     module: {
         rules: [
@@ -15,13 +18,13 @@ module.exports = {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
-                    loader: 'babel-loader'
-                }
-            }
-        ]
+                    loader: 'babel-loader',
+                },
+            },
+        ],
     },
     devServer: {
-        writeToDisk: true
+        writeToDisk: true,
     },
-    devtool: 'source-map'
+    devtool: 'source-map',
 }
