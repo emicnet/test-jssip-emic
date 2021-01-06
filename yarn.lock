@@ -2729,10 +2729,10 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-jssip-emicnet@^1.4.6:
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-1.5.0.tgz#8136404687860e93ca34235bb22776f04ffd517a"
-  integrity sha512-aQN2soEKKWTi2tUYek0vOUiCeZ9zDh7LQ3n/cWSL0ECbOf1s3UAE4FuTukDZhnBWQkJUL8AnMUZK8WlMvHD/mw==
+jssip-emicnet@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/jssip-emicnet/-/jssip-emicnet-1.5.1.tgz#6bb62acecd21766a3e30065a20f4894c2c940b0d"
+  integrity sha512-I4OJjntrhyU/X6uvdVbOTtR4RkbKQ15nqB86KkkjP9eHxk/ZIhFGf4DowReTswIC/F7YyPEleZ5dNX/vg7QYyQ==
   dependencies:
     base64-url "^2.3.3"
     crypto-js "^4.0.0"
@@ -2810,9 +2810,9 @@ locate-path@^3.0.0:
     path-exists "^3.0.0"
 
 lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.4:
-  version "4.17.15"
-  resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
-  integrity sha512-8xOcRHvCjnocdS5cpwXQXVzmmh5e5+saE2QGoeQmbKmRS6J3VQppPOIt0MnmE+4xlZoumy0GPG0D0MVIQbNA1A==
+  version "4.17.20"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.20.tgz#b44a9b6297bcb698f1c51a3545a2b3b368d59c52"
+  integrity sha512-PlhdFcillOINfeV7Ni6oF1TAEayyZBoZ8bcshTHqOYJYlrqzRK5hagpagky5o4HfCzzd1TRkXPMFq6cKk9rGmA==
 
 loglevel@^1.6.8:
   version "1.7.0"
