@@ -18,6 +18,7 @@ let callfailedReason = {
     512: '该客户今日被呼叫次数已达上限',
     1000: '禁止拨打无权限坐席',
 }
+let logoutTimer = -1
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
@@ -41,7 +42,6 @@ let eventCallback = {
         }
     },
     callEvent: function (type, data) {
-        phonebar.log('callback:callEvent', type, data)
         switch (type) {
             case 'newPBXCall':
                 var ccNumber = data.c
@@ -51,11 +51,17 @@ let eventCallback = {
                 phonebar.log('是否接听', isAnswer)
                 if (!isAnswer) {
                     phonebar.terminate(ccNumber)
+                    phonebar.log(
+                        '拒接，但请注意如果技能组只有本坐席在线，服务器还是打来'
+                    )
                 } else {
                     phonebar.answerPBXCall(ccNumber)
                 }
                 break
             case 'cancelPBXCall':
+                phonebar.log(
+                    '坐席拒接确认；如果坐席未接但主叫挂机也会有这个消息'
+                )
                 break
             case 'callinResponse':
                 if (data.r != 200) {
@@ -120,7 +126,7 @@ let eventCallback = {
                 }, 10000)
 
                 setTimeout(() => {
-                    phonebar.log(`挂机`)
+                    phonebar.log(`30秒已过，挂机`)
                     phonebar.terminate(ccNumber)
                 }, 30000)
                 phonebar.log(`2秒设置呼叫保持，10秒后回复，30秒后挂机`)
@@ -131,15 +137,27 @@ let eventCallback = {
                 phonebar.log('通话结束，等待10秒 下一个演示 ...')
                 setTimeout(() => {
                     if (times == 1) {
-                        phonebar.log(`已经呼叫过 ${encrpyt} 退出登录`)
-                        phonebar.logout()
+                        phonebar.log(
+                            `已经呼叫过 ${encrpyt} 这时候可以尝试呼入，呼入拒接则演示退出`
+                        )
+                        if (logoutTimer != -1) {
+                            phonebar.log(`已经设置退出timer，所以直接返回`)
+                            return
+                        }
+                        logoutTimer = setTimeout(() => {
+                            phonebar.log(`已过10分钟，退出登录`)
+                            phonebar.logout()
+                        }, 1000 * 60 * 10)
                     } else {
-                        phonebar.log(`呼叫 ${encrpyt} ，大概30秒后退出`)
+                        phonebar.log(`呼叫 ${encrpyt}`)
                         phonebar.call(encrpyt, 'encrpyt')
                         times = 1
                     }
                 }, 10000)
                 break
+            // default:
+            //     phonebar.log('这是sip相关信息，使用者可以不关心')
+            //     phonebar.log('callback:callEvent', type, data)
         }
     },
     kickedOffLine: function (data) {
@@ -212,6 +230,7 @@ let call_handler = async (err, res) => {
             switchnumber: switchnumber,
             pwd: pwd,
             gid: gid,
+            //webrtc-dev.emicloud.com是演示服务器，实际使用请不要用它
             socketUri: 'wss://webrtc-dev.emicloud.com:9060',
         }
         //登录易米呼叫服务器

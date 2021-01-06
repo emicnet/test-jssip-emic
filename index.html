@@ -8,7 +8,14 @@
 </head>
 
 <body>
-    请打开控制台查看调用结果
+    <p>请打开控制台查看调用结果，演示路程如下</p>
+    <ol>
+        <li>演示获取坐席和技能组信息</li>
+        <li>坐席登录，呼95588，演示呼叫保持和取消呼叫保持，大致30秒后挂机</li>
+        <li>再次呼95588加密后字串，sdk解密后呼叫95588，呼叫演示流程一致</li>
+        <li>第二次呼叫结束后设置10分钟后退出登录</li>
+        <li>在这10分钟，客户可以呼入该坐席，演示拒接场景。但注意，拒接后服务器还会再打来</li>
+    </ol>
 </body>
 <!-- <script src="https://unpkg.com/jssip-emicnet/dist/phonebar.js"></script> -->
 <script src="dist/index.js"></script>

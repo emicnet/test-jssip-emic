@@ -65,6 +65,7 @@ devServer: {
 11. 1.4.2 至 1.4.5内部开发调试版本，主要改动 node 10升级到 node 12，使用node 12打包发布
 12. 1.4.6 开始提供呼叫号码加密功能
 13. 1.5.0 提供班长监控功能。运行 `npm run monitor`  查看监控示例。
+14. 1.5.1 优化坐席拒接来电的处理。
 
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
