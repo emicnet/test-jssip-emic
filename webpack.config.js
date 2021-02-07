@@ -25,6 +25,7 @@ module.exports = {
     },
     devServer: {
         writeToDisk: true,
+        // host: '0.0.0.0',
     },
     devtool: 'source-map',
 }

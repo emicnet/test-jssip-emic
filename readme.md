@@ -66,6 +66,7 @@ devServer: {
 12. 1.4.6 开始提供呼叫号码加密功能
 13. 1.5.0 提供班长监控功能。运行 `npm run monitor`  查看监控示例。
 14. 1.5.1 优化坐席拒接来电的处理。
+15. 1.5.2 一个省的运维服务器可能不止一个
 
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
