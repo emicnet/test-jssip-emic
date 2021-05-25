@@ -6,9 +6,7 @@
                     "env",
                     {
                         "targets": {
-                            "chrome": "66",
-                            "firefox": "60",
-                            "safari": "11"
+                            "chrome": "86"
                         },
                         "modules": "commonjs",
                         "debug": true

@@ -5,13 +5,18 @@ import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
 // localStorage.setItem('debug', '*')
 // url 不用以 '/'结尾，但是加了 '/' 也能处理
-const backend = 'https://emic-cmb.emicloud.com'
+const backend = 'https://env2cmb.emicloud.com:8443'
 phonebar.log('正在获取用户信息。。。')
-let un = 7820
-let pwd = '12345678'
-let switchnumber = '02566687671'
+let un = 1008
+let pwd = 'welcome123'
+let switchnumber = '02566687336'
 let calloutnumber = '95588' //拨打工行自主电话
 let callinnumber = '7821'
+let baseParams = {
+    un,
+    pwd, //密码需要加引号
+    switchnumber,
+}
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
@@ -190,7 +195,7 @@ let call_handler = async (err, resposne) => {
     for (const group of res.data) {
         let gstatus = group.group_real_time_state
         if (!gstatus) {
-            phonebar.log(`${group.name} : ${group.id} 这是测试数据`)
+            phonebar.log(`${group.name} : ${group.gid} 这是测试数据`)
             continue
         }
         phonebar.log(`${group.name} : ${group.gid} : ${gstatus.state_name}`)
@@ -225,13 +230,7 @@ let call_handler = async (err, resposne) => {
     } else {
         phonebar.log('坐席所在的技能组目前都没有其他坐席在线')
     }
-    let params = {
-        un: un,
-        switchnumber: switchnumber,
-        pwd: pwd,
-        gid: mygroup.id, //sip注册用 id， web查询用 gid
-    }
-    // return
+    let params = Object.assign({ gid: mygroup.gid }, baseParams)
     phonebar.log('init 参数', params)
     //登录易米呼叫服务器
     let reg = phonebar.init(params, eventCallback)
@@ -266,17 +265,16 @@ function seatStatelog(state) {
     }
 }
 
-phonebar.getUser2(
+let params = Object.assign(
     {
-        un,
-        pwd, //密码需要加引号
-        switchnumber,
         backend,
         // callintype: 4,
         // number: 'xxxx', //设置回拨号码，注意 number是字符串
     },
-    call_handler
+    baseParams
 )
+
+phonebar.getUser2(params, call_handler)
 
 // 原有接口 getUser 调用方式不变
 // phonebar.getUser(
