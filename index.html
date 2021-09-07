@@ -9,6 +9,7 @@
 
 <body>
     <p>请打开控制台查看调用结果，演示路程如下</p>
+    <p>没有输入被叫号码，直接点击呼叫按钮，呼叫9558，并演示完整流程</p>
     <ol>
         <li>演示获取坐席和技能组信息</li>
         <li>坐席登录，呼95588，演示呼叫保持和取消呼叫保持，大致30秒后挂机</li>
@@ -16,18 +17,23 @@
         <li>第二次呼叫结束后设置10分钟后退出登录</li>
         <li>在这10分钟，客户可以呼入该坐席，演示拒接场景。但注意，拒接后服务器还会再打来</li>
     </ol>
+    <p>如果要演示被叫挂机的铃音提示，请输入被叫号码，并点击呼叫按钮。同时要确保有铃音文件在服务器上</p>
+    <label for="callernumber">被叫号码:</label>
+    <input type="text" id="callernumber" name="callernumber"><br>
+    <button type="button" onclick="demo()">Call</button>
+    <audio loop id="yimiduduaudio" preload="auto" src="ring.mp3"></audio>
 </body>
 <!-- <script src="https://unpkg.com/jssip-emicnet/dist/phonebar.js"></script> -->
 <script src="dist/index.js"></script>
 <script>
     // console.log(emic)
-//     phonebar.getUser('1023','1023','02566699734',function(err,data) {
-//     if(err) {
-//         console.log(err)
-//         return
-//     }
-//     console.log(data)
-// })
+    //     phonebar.getUser('1023','1023','02566699734',function(err,data) {
+    //     if(err) {
+    //         console.log(err)
+    //         return
+    //     }
+    //     console.log(data)
+    // })
 </script>
 
 </html>
