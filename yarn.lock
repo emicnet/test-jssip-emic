@@ -2729,10 +2729,10 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-jssip-emicnet@^1.4.6:
-  version "1.5.0"
-  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-1.5.0.tgz#8136404687860e93ca34235bb22776f04ffd517a"
-  integrity sha512-aQN2soEKKWTi2tUYek0vOUiCeZ9zDh7LQ3n/cWSL0ECbOf1s3UAE4FuTukDZhnBWQkJUL8AnMUZK8WlMvHD/mw==
+jssip-emicnet@^1.5.2:
+  version "1.5.3"
+  resolved "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-1.5.3.tgz#fcdb8ad0517a59e8d9360d98040abf5235bd1157"
+  integrity sha512-dAlz2zkp9bkLBAhG5LwlzatF5GNDeBLqHY0N+O2k2D9rfeopXbgTvdaJENbbBK3jrOMjTXkGP2RXgzwPMvNu4w==
   dependencies:
     base64-url "^2.3.3"
     crypto-js "^4.0.0"

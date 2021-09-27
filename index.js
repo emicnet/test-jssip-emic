@@ -4,6 +4,7 @@ localStorage.setItem('debug', 'phonebar:*')
 
 let un = 1001
 let pwd = 'welcome123@bj'
+//注意：需要根据实际测试企业填入总机号
 let switchnumber = '02160899188'
 let gid = 0
 let calloutnumber = '95588'
@@ -275,7 +276,7 @@ let getGroup_demo = async (res) => {
     }
 }
 
-let login_demo = (cb) => {
+let login_demo = () => {
     let params = {
         un: un,
         switchnumber: switchnumber,
@@ -285,7 +286,7 @@ let login_demo = (cb) => {
         socketUri: 'wss://webrtc-dev.emicloud.com:9060',
     }
     //登录易米呼叫服务器
-    let reg = phonebar.init(params, cb)
+    let reg = phonebar.init(params, eventCallback)
     if (reg) {
         phonebar.log('phonebar.init 发起注册')
     } else {
@@ -319,10 +320,10 @@ function seatStatelog(state) {
 
 let callDemo = async (err, res) => {
     if (!err) {
-        getGroup_demo(res)
+        await getGroup_demo(res)
         phonebar.log(`获取坐席所在技能组id:${gid}`)
         //登录成功后会发起呼叫，详见 register() 回调方法
-        login_demo(eventCallback)
+        login_demo()
     } else {
         phonebar.log('获取用户信息失败', err)
     }
