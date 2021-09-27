@@ -2,7 +2,7 @@ import phonebar from 'jssip-emicnet/dist/phonebar'
 // import phonebar from '../JsSipWrap/dist/phonebar'
 import isEqual from 'lodash.isequal'
 import get from 'lodash.get'
-localStorage.setItem('debug', 'phonebar:*,login:*,jsipWrapper:*')
+localStorage.setItem('debug', 'phonebar:*,login:*,')
 // localStorage.setItem('debug', '*')
 // url 不用以 '/'结尾，但是加了 '/' 也能处理
 const backend = 'https://env2cmb.emicloud.com:8443'
@@ -17,6 +17,7 @@ let baseParams = {
     pwd, //密码需要加引号
     switchnumber,
 }
+let gid = 0 //getGroup_demo 里获取
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
@@ -156,13 +157,33 @@ let eventCallback = {
     },
 }
 
-let call_handler = async (err, resposne) => {
-    if (err) {
-        phonebar.log('获取用户信息失败', err)
-        return
+function seatStatelog(state) {
+    var state = phonebar.checkSeatState()
+    switch (state) {
+        case 0:
+            phonebar.log('当前坐席 离线')
+            break
+        case 1:
+            phonebar.log('当前坐席 空闲')
+            break
+        case 2:
+            phonebar.log('当前坐席 忙碌')
+            break
+        case 3:
+            phonebar.log('当前坐席 振铃')
+            break
+        case 4:
+            phonebar.log('当前坐席 通话')
+            break
+        case 5:
+            phonebar.log('当前坐席 保持')
+            break
     }
+}
+
+let getGroup_demo = async (response) => {
     phonebar.log('获取用户信息,包含用户信息和组信息 ...')
-    let userData = resposne
+    let userData = response
     let userData2 = JSON.parse(localStorage.userData)
     if (isEqual(userData, userData2)) {
         phonebar.log('正确获取了客户信息')
@@ -230,7 +251,11 @@ let call_handler = async (err, resposne) => {
     } else {
         phonebar.log('坐席所在的技能组目前都没有其他坐席在线')
     }
-    let params = Object.assign({ gid: mygroup.gid }, baseParams)
+    gid = mygroup.gid
+}
+
+let login_demo = () => {
+    let params = Object.assign({ gid: gid }, baseParams)
     phonebar.log('init 参数', params)
     //登录易米呼叫服务器
     let reg = phonebar.init(params, eventCallback)
@@ -241,27 +266,14 @@ let call_handler = async (err, resposne) => {
     }
 }
 
-function seatStatelog(state) {
-    var state = phonebar.checkSeatState()
-    switch (state) {
-        case 0:
-            phonebar.log('当前坐席 离线')
-            break
-        case 1:
-            phonebar.log('当前坐席 空闲')
-            break
-        case 2:
-            phonebar.log('当前坐席 忙碌')
-            break
-        case 3:
-            phonebar.log('当前坐席 振铃')
-            break
-        case 4:
-            phonebar.log('当前坐席 通话')
-            break
-        case 5:
-            phonebar.log('当前坐席 保持')
-            break
+let callDemo = async (err, res) => {
+    if (!err) {
+        await getGroup_demo(res)
+        phonebar.log(`获取坐席所在技能组id:${gid}`)
+        //登录成功后会发起呼叫，详见 register() 回调方法
+        login_demo()
+    } else {
+        phonebar.log('获取用户信息失败', err)
     }
 }
 
@@ -273,8 +285,7 @@ let params = Object.assign(
     },
     baseParams
 )
-
-phonebar.getUser2(params, call_handler)
+phonebar.getUser2(params, callDemo)
 
 // 原有接口 getUser 调用方式不变
 // phonebar.getUser(
