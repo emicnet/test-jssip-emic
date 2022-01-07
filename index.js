@@ -1,8 +1,8 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
-let un = 1001
+let un = 1001 //演示账号
 let pwd = '@Aa666666'
 //注意：需要根据实际测试企业填入总机号
 let switchnumber = '051066050186'
@@ -198,7 +198,7 @@ function hangup() {
 /**
  * 发送 DTMF Tone 要一个一个传，中间有间隔，一串数字一起传对方没法处理
  * 实际使用中拨号界面弹出数字小键盘，让用户一个数字一个数字按，不会有问题
- * 代码只能通过延时等待（目前是两秒发一个）输入来模拟
+ * 代码只能通过延时等待（代码示例两秒发一个）输入来模拟
  */
 
 function sendDTMF() {
@@ -221,11 +221,11 @@ function sendDTMF() {
  * 只演示外呼中几个重要的回调状态
  */
 
-let hangup_demo = (type, data) => {
+let demf_demo = (type, data) => {
     switch (type) {
         case 'calloutResponse':
             //获取ccnumber 通话唯一标识
-            var ccNumber = data.r == 200 ? data.c : undefined
+            ccNumber = data.r == 200 ? data.c : undefined
             if (data.r != 200) {
                 phonebar.log(`响应状态${data.r}`)
                 let msg = callfailedReason[data.r]
@@ -246,7 +246,7 @@ let hangup_demo = (type, data) => {
             phonebar.log(`被叫已经接听，10秒后传送DTMF ${ext} ...`)
             setTimeout(() => {
                 sendDTMF()
-            }, 10000)
+            }, 10000) //10秒等待是模拟等待接听到 “请输入分机号” 的时间
             break
         case 'endPBXCall':
             // 获取坐席状态
@@ -368,11 +368,12 @@ function demo() {
         caller = '95588'
     }
     phonebar.log(`呼叫一个实际号码 ${caller}，并发送DTMF`)
-    ccNumber = undefined
-    //呼叫示例演示被叫挂机
-    eventCallback.callEvent = hangup_demo
+    //呼叫示例演示拨打 DTMF
+    eventCallback.callEvent = demf_demo
     eventCallback.nextDemo = () => {
-        phonebar.log(`呼叫一个实际号码 ${caller}，并最后让被叫挂机`)
+        phonebar.log(
+            `呼叫一个实际号码 ${caller}，呼叫之后处理根据 eventCallback.callEvent 的设置来演示`
+        )
         phonebar.call(caller)
     }
     //要确保页面上有 audio tag, 同时要确保 ring.mp3 放在服务器响应位置
