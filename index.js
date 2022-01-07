@@ -1,11 +1,11 @@
-import phonebar from 'jssip-emicnet/dist/phonebar'
-// import phonebar from '../JsSipWrap/dist/phonebar'
+// import phonebar from 'jssip-emicnet/dist/phonebar'
+import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
 let un = 1001
-let pwd = 'welcome123@bj'
+let pwd = '@Aa666666'
 //注意：需要根据实际测试企业填入总机号
-let switchnumber = '02160899188'
+let switchnumber = '051066050186'
 let gid = 0
 let calloutnumber = '95588'
 let encrpyt = 'opwmRvGhOcGMXRZSp_moOQ'
@@ -19,6 +19,7 @@ let callfailedReason = {
     1000: '禁止拨打无权限坐席',
 }
 let logoutTimer = -1
+let ccNumber
 
 //演示代码，登录成功后发起呼叫
 let eventCallback = {
@@ -188,6 +189,33 @@ let eventCallback = {
     },
 }
 
+function hangup() {
+    phonebar.log(`hangup ${ccNumber}`)
+    if (!ccNumber) return
+    phonebar.terminate(ccNumber)
+}
+
+/**
+ * 发送 DTMF Tone 要一个一个传，中间有间隔，一串数字一起传对方没法处理
+ * 实际使用中拨号界面弹出数字小键盘，让用户一个数字一个数字按，不会有问题
+ * 代码只能通过延时等待（目前是两秒发一个）输入来模拟
+ */
+
+function sendDTMF() {
+    let ext = document.getElementById('extnumber').value
+    if (!ext) return
+    if (!ext.endsWith('#')) {
+        ext = ext + '#'
+    }
+    let nums = ext.split('')
+    for (let [i, n] of nums.entries()) {
+        setTimeout(() => {
+            phonebar.log(`现在传传送DTMF ${n}`)
+            phonebar.sendDTMF(n)
+        }, 2000 * i)
+    }
+}
+
 /**
  * 演示外呼后，被叫挂机，主叫铃音提示
  * 只演示外呼中几个重要的回调状态
@@ -213,7 +241,12 @@ let hangup_demo = (type, data) => {
             break
         case 'answeredPBXCall':
             //被叫接听
-            phonebar.log('被叫已经接听，等待被叫挂机 ...')
+            ccNumber = data.c
+            let ext = document.getElementById('extnumber').value
+            phonebar.log(`被叫已经接听，10秒后传送DTMF ${ext} ...`)
+            setTimeout(() => {
+                sendDTMF()
+            }, 10000)
             break
         case 'endPBXCall':
             // 获取坐席状态
@@ -332,16 +365,17 @@ let callDemo = async (err, res) => {
 function demo() {
     let caller = document.getElementById('callernumber').value
     if (!caller) {
-        phonebar.log(`没有输入被叫号码，拨打95588`)
-    } else {
-        //呼叫示例演示被叫挂机
-        eventCallback.callEvent = hangup_demo
-        eventCallback.nextDemo = () => {
-            phonebar.log(`呼叫一个实际号码 ${caller}，并最后让被叫挂机`)
-            phonebar.call(caller)
-        }
-        //要确保页面上有 audio tag, 同时要确保 ring.mp3 放在服务器响应位置
+        caller = '95588'
     }
+    phonebar.log(`呼叫一个实际号码 ${caller}，并发送DTMF`)
+    ccNumber = undefined
+    //呼叫示例演示被叫挂机
+    eventCallback.callEvent = hangup_demo
+    eventCallback.nextDemo = () => {
+        phonebar.log(`呼叫一个实际号码 ${caller}，并最后让被叫挂机`)
+        phonebar.call(caller)
+    }
+    //要确保页面上有 audio tag, 同时要确保 ring.mp3 放在服务器响应位置
     phonebar.log('正在获取用户信息。。。')
     phonebar.getUser2(
         {
@@ -364,3 +398,4 @@ function demo() {
 //because we use webpack we need to add it to window
 //https://stackoverflow.com/questions/35781579/basic-webpack-not-working-for-button-click-function-uncaught-reference-error
 window.demo = demo
+window.hangup = hangup
