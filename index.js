@@ -5,11 +5,11 @@ import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,')
 // localStorage.setItem('debug', '*')
 // url 不用以 '/'结尾，但是加了 '/' 也能处理
-const backend = 'https://env2cmb.emicloud.com:8443'
+const backend = 'https://cmb.emicloudcc.com'
 phonebar.log('正在获取用户信息。。。')
-let un = 1008
-let pwd = 'welcome123'
-let switchnumber = '02566687336'
+let un = 1004
+let pwd = 'cheche@518'
+let switchnumber = '01086473321'
 let calloutnumber = '95588' //拨打工行自主电话
 let callinnumber = '7821'
 let baseParams = {
@@ -124,7 +124,7 @@ let eventCallback = {
                 setTimeout(() => {
                     phonebar.log(`30秒后挂机`)
                     phonebar.terminate(ccNumber)
-                }, 30000)
+                }, 120000)
                 break
             case 'endPBXCall':
                 // 获取坐席状态
@@ -251,7 +251,7 @@ let getGroup_demo = async (response) => {
     } else {
         phonebar.log('坐席所在的技能组目前都没有其他坐席在线')
     }
-    gid = mygroup.gid
+    if (mygroup && mygroup.gid) gid = mygroup.gid
 }
 
 let login_demo = () => {
