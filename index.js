@@ -1,5 +1,5 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
 import isEqual from 'lodash.isequal'
 import get from 'lodash.get'
 localStorage.setItem('debug', 'phonebar:*,login:*,ws:*')
@@ -160,13 +160,17 @@ let eventCallback = {
     threewayCall: function({ccNumber,result}) {
         phonebar.log(`3way call ${ccNumber}:result ${result}`)
         if (result == 0) {
-            phonebar.log(`3way call succeeded, please update the UI`)
+            phonebar.log(`三方通话开始, please update the UI`)
             setTimeout(()=>{
                 phonebar.log(`10秒后挂断和第三方的通话`)
                 phonebar.threewayCall({ccNumber,type:4})
             },10000)
-        } else {
-            this.log(`3way call failed, please update the UI`)
+        } 
+        if (result == 1) {
+            this.log(`三方呼叫失败, please update the UI`)
+        }
+        if (result == 2) {
+            this.log(`三方通话中，三方先挂机了, please update the UI`)
         }
     }
 }
@@ -197,12 +201,12 @@ function seatStatelog(state) {
 
 async function threewayCallDemo(ccNumber) {
     phonebar.log(`invite ${threeWayNumber} to the call ${ccNumber}`)
-    let result = await phonebar.threewayCall({ccNumber,type:3,callee:threeWayNumber})
+    let {result,reason} = await phonebar.threewayCall({ccNumber,type:3,callee:threeWayNumber})
     if (result == 0) {
         phonebar.log(`我方服务器已经处理这个三方呼叫请求，开始向第三方发起呼叫，最终呼叫结果通过回调通知`)
         //查看 threewayCallResult 回调
     } else {
-        phonebar.log(`我方服务器未能发起三方呼叫请求，请检查输入参数是否正确`)
+        phonebar.log(`我方服务器未能发起三方呼叫请求，原图: ${reaosn}, 请检查输入参数是否正确`)
     }
     setTimeout(()=>{
         phonebar.log(`25秒左右挂机 ${ccNumber}`)
