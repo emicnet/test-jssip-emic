@@ -2,10 +2,10 @@ import phonebar from 'jssip-emicnet/dist/phonebar'
 // import phonebar from '../JsSipWrap/dist/phonebar'
 localStorage.setItem('debug', 'phonebar:*')
 
-let un = 1001 //演示账号
-let pwd = '@Aa666666'
+let un = 1012 //演示账号
+let pwd = 'zn123456!'
 //注意：需要根据实际测试企业填入总机号
-let switchnumber = '051066050186'
+let switchnumber = '02759867529'
 let gid = 0
 let calloutnumber = '95588'
 let encrpyt = 'opwmRvGhOcGMXRZSp_moOQ'
