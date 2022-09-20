@@ -101,5 +101,5 @@ devServer: {
 5. 2.0.6 修复登录时候一个小问题 ， sip 注册的user-agent 字段包含易米自定义的扩展熟悉，比如登录所在技能组。
 6. 2.0.7   `call_mode` 设置错误
 7. 2.0.8   通话保活时长使用`invite`而不是缺省的`update`: `session_timers_refresh_method: 'invite'`
-8. 2.1.0 增加三方通话功能
+8. 2.1.1 增加三方通话功能
 

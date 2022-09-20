@@ -2775,9 +2775,9 @@
     "minimist" "^1.2.0"
 
 "jssip-emicnet@^2.0.5":
-  "integrity" "sha512-iU+eBufm5+sHx1kHSCWBPfia01eNiVVScAPlXbPK8E96WkvV9cY7stUYTYR3PjMDo1vRbq2YbFX13G63CBDp2Q=="
-  "resolved" "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-2.1.0.tgz"
-  "version" "2.1.0"
+  "integrity" "sha512-5uINQaorF1Mj9zkJ4BFrnHBmyEODmZglVW0eS+P+Csuwhox5v8wW9HS8mHcT2qlYXrdp1+F8DY/XXnyH/ibiwA=="
+  "resolved" "https://registry.npmjs.org/jssip-emicnet/-/jssip-emicnet-2.1.1.tgz"
+  "version" "2.1.1"
   dependencies:
     "crypto-js" "^4.0.0"
     "jssip" "^3.5.5"
