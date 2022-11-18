@@ -1,4 +1,4 @@
-### jssip-emicnet 版本修改历史
+## jssip-emicnet 版本修改历史
 
 1. 1.3 之前版本主要是实现 UI 工具条；1.2.8 开始提供 umd 打包方式便于 api 调用。
 2. 1.3.3 eslint+prettier 设置更新， 发布 mocha 测试用例；同时 1.3.2 发布时忘了 npm bundle 就 npm publish 造成 1.3.2 不可用。
@@ -21,6 +21,8 @@
 17. 1.5.4 增加 DTMF 拨打分机号功能。注：DTFM 拨号音要一个数字一个数字输入，如果是一串数字连着发，接收方基本都不能处理，会提示“输入错误，请您重新输入” ，举个例子，如果要拨打分机号 110#，不能一次调用 `sendDTMF('110#')` 而是分四次调用 `sendDTMF()`每次传一个字符串，详见示例代码
 18. 1.5.5 更新域名 `emicloud.com`
 19. 1.5.6 为众安添加第三行中继号码
+20. 1.6.0 改用babel 7打包，支持第三方中继平台
+21. 1.6.2 增加 call2接口； 修复 1.6.0 改用babel 7打包后日志输出不完整问题
 
 
 注，[npm 的包没有一个标准方法能看到包的发布日志](https://stackoverflow.com/questions/34971504/how-do-i-see-the-release-notes-for-an-npm-package-before-i-upgrade) ，所以把重要的发布日志写在这里。
@@ -31,7 +33,7 @@
 
 
 
-### 演示代码说明
+## 演示代码说明
 
 示例代码演示**获取账户相关信息**、**注册登录易米服务器**，**发起呼叫**以及**呼叫后续处理**。每一步演示代码（除了第一步演示账号写死在代码里）都是在上一个演示代码的回调函数里进行。为了避免回调函数层层嵌套，影响代码可读性，事件回调函数调用顺序和组织结构如下：
 
@@ -41,7 +43,7 @@ demo() -> callDemo() -> login_demo() -> dtmf_demo()
 
 demo()： 
 1. 获取用户输入的被叫号码，设置演示的呼叫流程 eventCallback.callEvent
-2. 1.5.4 版本演示发送 DTMF tone 拨打分机号流程 eventCallback.callEvent = demf_demo
+2. 1.5.4 版本演示发送 DTMF tone 拨打分机号流程 eventCallback.callEvent = dtmf_demo
 3. 示例代码还有一个较完整的呼叫回调事件代码 eventCallback.callEvent 可以演示大部分呼叫事件
 4. 调用 callDemo() 启动实际演示调用
 
@@ -52,21 +54,27 @@ callDemo()：
 login_demo()：
 1. 登录易米服务器，注意实际使用中请不要使用开发测试服务器 'wss://webrtc-dev.emicloud.com:9060'
 2. 登录结果通过回调事件 eventCallback.register 返回
-3. 如果登录成功，在 eventCallback.register 回调事件里发起呼叫
+3. 如果登录成功，在 eventCallback.register 回调事件里发起呼叫。如果在 demo() 注释掉 nextDemo 赋值的代码，就直接外呼 95588
 
 dtmf_demo()
-1. 呼叫回调事件处理
+1. 呼叫回调事件处理，只处理几个主要的呼叫事件
 2. 通话接通 answeredPBXCall， 调用 sendDTMF()
 3. 结束通话 endPBXCall 退出登录 logout()
 ```
 
 
 
-
-
 注意事项如下
 
-### babel 版本
+## babel 版本
+
+### babel 7
+
+从 1.6.0 开始 jssip-emicnet 使用 babel **7** 和  `@babel/preset-env` ，babel **7** (`@babel/core`) 必须用 `babel-loader` **8** 
+
+以下 babel **6**的描述对 **1.6.0 之前版本**适用
+
+### babel 6
 
 jssip-emicnet 使用 babel 6, "babel-preset-env": "^1.7.0",
 使用 jssip-emicnet 时候 如果用 babel 7 `@babel/preset-env` webpack 打包会出错
@@ -79,7 +87,7 @@ jssip-emicnet 使用 babel 6, "babel-preset-env": "^1.7.0",
 
 所以 jssip-emicnet 也会在适当时候更新到 babel 7
 
-### babel-loader
+#### babel-loader
 
 `babel-loader` 版本是另一个需要注意的地方： babel **7** (`@babel/core`) 必须用 `babel-loader` **8** ，jssip-emicnet 使用 babel **6**, 所以使用它需要用 `babel-loader` **7** 。
 
@@ -87,7 +95,7 @@ jssip-emicnet 使用 babel 6, "babel-preset-env": "^1.7.0",
 
 如果只是运行 webpack-dev-server 因为实际上没有转码，所以用 babel 7 + loader 8 或者 babel 6+ loader 7 的组合都可以。但如果用 babel-loader 7+ @babel/core 打包会报错 `Error: Cannot find module 'babel-core'`
 
-### 打包问题
+#### 打包问题
 
 如果需要把整个项目打包 （我们示例当然不需要）就还要 `babel-plugin-transform-runtime`
 
@@ -108,6 +116,6 @@ devServer: {
 }
 ```
 
-### devDependencies
+#### devDependencies
 
 示例里 devDependencies 尽量设置最少的 babel 包， 比如 `babel-register` 应该是[在 node.js 测试才需要](https://x-team.com/blog/setting-up-javascript-testing-tools-for-es6/) 所以没有加。

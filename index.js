@@ -1,6 +1,6 @@
-// import phonebar from 'jssip-emicnet/dist/phonebar'
-import phonebar from '../JsSipWrap/dist/phonebar'
-localStorage.setItem('debug', 'phonebar:*')
+import phonebar from 'jssip-emicnet/dist/phonebar'
+// import phonebar from '../JsSipWrap/dist/phonebar'
+localStorage.setItem('debug', 'phonebar:*,jssip-wrap:*')
 
 let un = 1001 //演示账号
 let pwd = 'no123456.'
@@ -36,7 +36,7 @@ let eventCallback = {
                     eventCallback.nextDemo()
                 } else {
                     // 登陆成功之后，可以呼出
-                    // 呼外线
+                    // 如果在 demo() 注释掉 nextDemo 赋值的代码，就直接外呼 95588
                     let calltype = phonebar.call(calloutnumber)
                     phonebar.log('呼' + (calltype == 2 ? '外线' : '内线'))
                     // 呼内线
@@ -221,7 +221,7 @@ function sendDTMF() {
  * 只演示外呼中几个重要的回调状态
  */
 
-let demf_demo = (type, data) => {
+let dtmf_demo = (type, data) => {
     switch (type) {
         case 'calloutResponse':
             //获取ccnumber 通话唯一标识
@@ -369,12 +369,12 @@ function demo() {
     }
     phonebar.log(`呼叫一个实际号码 ${caller}，并发送DTMF`)
     //呼叫示例演示拨打 DTMF
-    eventCallback.callEvent = demf_demo
+    eventCallback.callEvent = dtmf_demo
     eventCallback.nextDemo = () => {
         phonebar.log(
             `呼叫一个实际号码 ${caller}，呼叫之后处理根据 eventCallback.callEvent 的设置来演示`
         )
-        phonebar.call(caller)
+        phonebar.call2({number:caller,areaCode:"100101"})
     }
     //要确保页面上有 audio tag, 同时要确保 ring.mp3 放在服务器响应位置
     phonebar.log('正在获取用户信息。。。')
