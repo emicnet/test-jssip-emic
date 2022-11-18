@@ -3,12 +3,14 @@
         "development": {
             "presets": [
                 [
-                    "env",
+                    "@babel/preset-env",
                     {
                         "targets": {
-                            "chrome": "66",
-                            "firefox": "60",
-                            "safari": "11"
+                            "browsers": [
+                                "last 15 Chrome versions",
+                                "last 2 Firefox versions",
+                                "last 2 Safari versions"
+                            ]
                         },
                         "modules": "commonjs",
                         "debug": true
@@ -19,24 +21,36 @@
         "production": {
             "presets": [
                 [
-                    "env",
+                    "@babel/preset-env",
                     {
                         "targets": {
-                            "chrome": "66",
-                            "firefox": "60",
-                            "safari": "11",
-                            "edge": "76"
+                            "browsers": [
+                                "last 10 Chrome versions",
+                                "last 3 Firefox versions",
+                                "last 2 Safari versions",
+                                "ie 10-11",
+                                "last 3 edge versions"
+                            ]
                         },
-                        "debug": true
+                        "modules": "commonjs",
+                        "debug": true,
+                        "useBuiltIns": "usage",
+                        "corejs": {
+                            "version": 3.8, // 使用core-js@3
+                            "proposals": true
+                        }
                     }
                 ]
             ],
             "plugins": [
                 [
-                    "transform-runtime",
+                    "@babel/plugin-transform-runtime",
                     {
-                        "polyfill": false,
                         "regenerator": true
+                        // "corejs": {
+                        //     "version": 3,
+                        //     "proposals": true
+                        // }
                     }
                 ]
             ]
